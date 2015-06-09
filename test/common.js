@@ -58,10 +58,7 @@ function refreshTmpDir() {
     } catch (e) {
     }
 
-    try {
-      fs.mkdirSync(exports.tmpDir);
-    } catch (e) {
-    }
+    fs.mkdirSync(exports.tmpDir);
   }
 }
 
