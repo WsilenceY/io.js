@@ -4,11 +4,6 @@ var assert = require('assert');
 var cluster = require('cluster');
 var dgram = require('dgram');
 
-// TODO XXX FIXME when windows supports clustered dgram ports re-enable this
-// test
-if (process.platform == 'win32')
-  process.exit(0);
-
 function noop() {}
 
 if (cluster.isMaster) {
