@@ -737,5 +737,4 @@ process.on('exit', function() {
   assert.equal(running, false);
   assert.strictEqual(expected, completed);
   assert.ok(getaddrinfoCallbackCalled);
-  assert.fail('just','making sure we fail', 'hi mom and dad', '=');
 });
