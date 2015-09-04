@@ -13,6 +13,19 @@ var expected = 0,
     running = false,
     queue = [];
 
+var fs = require('fs');
+try {
+  console.error(fs.readFileSync('/etc/sysconfig/network', 'utf-8'));
+} catch (e) {
+  console.error(e.code);
+}
+console.error('===');
+try {
+  console.error(fs.readFileSync('/etc/modprobe.conf', 'utf-8'));
+} catch (e) {
+  console.error(e.code);
+}
+console.error('===');
 
 function TEST(f) {
   function next() {
