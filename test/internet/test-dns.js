@@ -15,13 +15,7 @@ var expected = 0,
 
 var fs = require('fs');
 try {
-  console.error(fs.readFileSync('/etc/sysconfig/network', 'utf-8'));
-} catch (e) {
-  console.error(e.code);
-}
-console.error('===');
-try {
-  console.error(fs.readFileSync('/etc/modprobe.conf', 'utf-8'));
+  console.error(fs.readFileSync('/etc/hosts', 'utf-8'));
 } catch (e) {
   console.error(e.code);
 }
