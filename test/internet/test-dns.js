@@ -13,13 +13,6 @@ var expected = 0,
     running = false,
     queue = [];
 
-var fs = require('fs');
-try {
-  console.error(fs.readFileSync('/etc/hosts', 'utf-8'));
-} catch (e) {
-  console.error(e.code);
-}
-console.error('===');
 
 function TEST(f) {
   function next() {
@@ -582,6 +575,7 @@ TEST(function test_lookup_all_mixed(done) {
 TEST(function test_lookupservice_ip_ipv4(done) {
   var req = dns.lookupService('127.0.0.1', 80, function(err, host, service) {
     if (err) throw err;
+    console.log('host: ' + host);
     assert.ok(common.isValidHostname(host));
 
     /*
