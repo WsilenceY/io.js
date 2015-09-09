@@ -201,3 +201,4 @@ process.on('exit', function() {
   assert.equal(running, false);
   assert.strictEqual(expected, completed);
 });
+
