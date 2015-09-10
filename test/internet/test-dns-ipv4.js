@@ -4,7 +4,7 @@ var assert = require('assert'),
     dns = require('dns'),
     net = require('net'),
     isIP = net.isIP,
-    isIPv6 = net.isIPv6;
+    isIPv4 = net.isIPv4;
 var util = require('util');
 
 var expected = 0,
@@ -40,14 +40,14 @@ function checkWrap(req) {
   assert.ok(typeof req === 'object');
 }
 
-TEST(function test_resolve6(done) {
-  var req = dns.resolve6('ipv6.google.com', function(err, ips) {
+TEST(function test_resolve4(done) {
+  var req = dns.resolve4('www.google.com', function(err, ips) {
     if (err) throw err;
 
     assert.ok(ips.length > 0);
 
     for (var i = 0; i < ips.length; i++) {
-      assert.ok(isIPv6(ips[i]));
+      assert.ok(isIPv4(ips[i]));
     }
 
     done();
@@ -56,8 +56,8 @@ TEST(function test_resolve6(done) {
   checkWrap(req);
 });
 
-TEST(function test_reverse_ipv6(done) {
-  var req = dns.reverse('2001:4860:4860::8888', function(err, domains) {
+TEST(function test_reverse_ipv4(done) {
+  var req = dns.reverse('8.8.8.8', function(err, domains) {
     if (err) throw err;
 
     assert.ok(domains.length > 0);
@@ -73,11 +73,11 @@ TEST(function test_reverse_ipv6(done) {
   checkWrap(req);
 });
 
-TEST(function test_lookup_ipv6_explicit(done) {
-  var req = dns.lookup('ipv6.google.com', 6, function(err, ip, family) {
+TEST(function test_lookup_ipv4_explicit(done) {
+  var req = dns.lookup('www.google.com', 4, function(err, ip, family) {
     if (err) throw err;
-    assert.ok(net.isIPv6(ip));
-    assert.strictEqual(family, 6);
+    assert.ok(net.isIPv4(ip));
+    assert.strictEqual(family, 4);
 
     done();
   });
@@ -85,27 +85,11 @@ TEST(function test_lookup_ipv6_explicit(done) {
   checkWrap(req);
 });
 
-/* This ends up just being too problematic to test
-TEST(function test_lookup_ipv6_implicit(done) {
-  var req = dns.lookup('ipv6.google.com', function(err, ip, family) {
+TEST(function test_lookup_ipv4_implicit(done) {
+  var req = dns.lookup('www.google.com', function(err, ip, family) {
     if (err) throw err;
-    assert.ok(net.isIPv6(ip));
-    assert.strictEqual(family, 6);
-
-    done();
-  });
-
-  checkWrap(req);
-});
-*/
-
-TEST(function test_lookup_ipv6_explicit_object(done) {
-  var req = dns.lookup('ipv6.google.com', {
-    family: 6
-  }, function(err, ip, family) {
-    if (err) throw err;
-    assert.ok(net.isIPv6(ip));
-    assert.strictEqual(family, 6);
+    assert.ok(net.isIPv4(ip));
+    assert.strictEqual(family, 4);
 
     done();
   });
@@ -113,38 +97,13 @@ TEST(function test_lookup_ipv6_explicit_object(done) {
   checkWrap(req);
 });
 
-TEST(function test_lookup_ipv6_hint(done) {
+TEST(function test_lookup_ipv4_explicit_object(done) {
   var req = dns.lookup('www.google.com', {
-    family: 6,
-    hints: dns.V4MAPPED
+    family: 4
   }, function(err, ip, family) {
-    if (err) {
-      // FreeBSD does not support V4MAPPED
-      if (process.platform === 'freebsd') {
-        assert(err instanceof Error);
-        assert.strictEqual(err.code, 'EAI_BADFLAGS');
-        assert.strictEqual(err.hostname, 'www.google.com');
-        assert.ok(/getaddrinfo EAI_BADFLAGS/.test(err.message));
-        done();
-        return;
-      } else {
-        throw err;
-      }
-    }
-    assert.ok(net.isIPv6(ip));
-    assert.strictEqual(family, 6);
-
-    done();
-  });
-
-  checkWrap(req);
-});
-
-TEST(function test_lookup_ip_ipv6(done) {
-  var req = dns.lookup('::1', function(err, ip, family) {
     if (err) throw err;
-    assert.ok(net.isIPv6(ip));
-    assert.strictEqual(family, 6);
+    assert.ok(net.isIPv4(ip));
+    assert.strictEqual(family, 4);
 
     done();
   });
@@ -152,16 +111,54 @@ TEST(function test_lookup_ip_ipv6(done) {
   checkWrap(req);
 });
 
-TEST(function test_lookup_all_ipv6(done) {
-  var req = dns.lookup('www.google.com', {all: true, family: 6},
+TEST(function test_lookup_ipv4_hint_addrconfig(done) {
+  var req = dns.lookup('www.google.com', {
+    hints: dns.ADDRCONFIG
+  }, function(err, ip, family) {
+    if (err) throw err;
+    assert.ok(net.isIPv4(ip));
+    assert.strictEqual(family, 4);
+
+    done();
+  });
+
+  checkWrap(req);
+});
+
+TEST(function test_lookup_ip_ipv4(done) {
+  var req = dns.lookup('127.0.0.1', function(err, ip, family) {
+    if (err) throw err;
+    assert.strictEqual(ip, '127.0.0.1');
+    assert.strictEqual(family, 4);
+
+    done();
+  });
+
+  checkWrap(req);
+});
+
+TEST(function test_lookup_localhost_ipv4(done) {
+  var req = dns.lookup('localhost', 4, function(err, ip, family) {
+    if (err) throw err;
+    assert.strictEqual(ip, '127.0.0.1');
+    assert.strictEqual(family, 4);
+
+    done();
+  });
+
+  checkWrap(req);
+});
+
+TEST(function test_lookup_all_ipv4(done) {
+  var req = dns.lookup('www.google.com', {all: true, family: 4},
                        function(err, ips) {
     if (err) throw err;
     assert.ok(Array.isArray(ips));
     assert.ok(ips.length > 0);
 
     ips.forEach(function(ip) {
-      assert.ok(isIPv6(ip.address));
-      assert.strictEqual(ip.family, 6);
+      assert.ok(isIPv4(ip.address));
+      assert.strictEqual(ip.family, 4);
     });
 
     done();
@@ -170,8 +167,8 @@ TEST(function test_lookup_all_ipv6(done) {
   checkWrap(req);
 });
 
-TEST(function test_lookupservice_ip_ipv6(done) {
-  var req = dns.lookupService('::1', 80, function(err, host, service) {
+TEST(function test_lookupservice_ip_ipv4(done) {
+  var req = dns.lookupService('127.0.0.1', 80, function(err, host, service) {
     if (err) throw err;
     assert.equal(typeof host, 'string');
     assert(host);
@@ -198,19 +195,6 @@ TEST(function test_lookupservice_ip_ipv6(done) {
 
   checkWrap(req);
 });
-
-/* Disabled because it appears to be not working on linux. */
-/* TEST(function test_lookup_localhost_ipv6(done) {
-  var req = dns.lookup('localhost', 6, function(err, ip, family) {
-    if (err) throw err;
-    assert.ok(net.isIPv6(ip));
-    assert.strictEqual(family, 6);
-
-    done();
-  });
-
-  checkWrap(req);
-}); */
 
 process.on('exit', function() {
   console.log(completed + ' tests completed');
