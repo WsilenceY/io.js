@@ -673,27 +673,27 @@ TEST(function test_lookup_failure(done) {
 });
 
 
-// TEST(function test_resolve_failure(done) {
-//   var req = dns.resolve4('nosuchhostimsure', function(err) {
-//     assert(err instanceof Error);
+TEST(function test_resolve_failure(done) {
+  var req = dns.resolve4('nosuchhostimsure', function(err) {
+    assert(err instanceof Error);
 
-//     switch (err.code) {
-//       case 'ENOTFOUND':
-//       case 'ESERVFAIL':
-//         break;
-//       default:
-//         assert.strictEqual(err.code, 'ENOTFOUND');  // Silly error code...
-//         break;
-//     }
+    switch (err.code) {
+      case 'ENOTFOUND':
+      case 'ESERVFAIL':
+        break;
+      default:
+        assert.strictEqual(err.code, 'ENOTFOUND');  // Silly error code...
+        break;
+    }
 
-//     assert.strictEqual(err.hostname, 'nosuchhostimsure');
-//     assert.ok(/nosuchhostimsure/.test(err.message));
+    assert.strictEqual(err.hostname, 'nosuchhostimsure');
+    assert.ok(/nosuchhostimsure/.test(err.message));
 
-//     done();
-//   });
+    done();
+  });
 
-//   checkWrap(req);
-// });
+  checkWrap(req);
+});
 
 
 /* Disabled because it appears to be not working on linux. */
