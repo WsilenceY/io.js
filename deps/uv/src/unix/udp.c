@@ -690,16 +690,6 @@ int uv_udp_set_broadcast(uv_udp_t* handle, int on) {
     return -errno;
   }
 
-#if defined(__FreeBSD__)
-  if (setsockopt(handle->io_watcher.fd,
-                 IPPROTO_IP,
-                 IP_ONESBCAST,
-                 &on,
-                 sizeof(on))) {
-    return -errno;
-  }
-#endif
-
   return 0;
 }
 
