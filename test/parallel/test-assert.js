@@ -307,6 +307,7 @@ try {
 }
 assert.equal(true, threw,
              'a.doesNotThrow with an explicit error is eating extra errors');
+threw = false;
 
 // key difference is that throwing our correct error makes an assertion error
 try {
@@ -317,6 +318,17 @@ try {
 }
 assert.equal(true, threw,
              'a.doesNotThrow is not catching type matching errors');
+threw = false;
+
+// if no `error` parameter is specified, any exception makes an assertion error
+try {
+  a.doesNotThrow(makeBlock(thrower, TypeError));
+} catch (e) {
+  threw = true;
+  assert.ok(e instanceof a.AssertionError);
+}
+assert.equal(true, threw,
+             'a.doesNotThrow is not catching an error');
 
 assert.throws(function() {assert.ifError(new Error('test error'));});
 assert.doesNotThrow(function() {assert.ifError(null);});
