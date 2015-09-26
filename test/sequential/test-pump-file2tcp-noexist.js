@@ -11,9 +11,9 @@ var got_error = false;
 var conn_closed = false;
 
 var server = net.createServer(function(stream) {
-  common.error('pump!');
+  console.error('pump!');
   util.pump(fs.createReadStream(fn), stream, function(err) {
-    common.error('util.pump\'s callback fired');
+    console.error('util.pump\'s callback fired');
     if (err) {
       got_error = true;
     } else {
@@ -29,7 +29,7 @@ server.listen(common.PORT, function() {
   var conn = net.createConnection(common.PORT);
   conn.setEncoding('utf8');
   conn.on('data', function(chunk) {
-    common.error('recv data! nchars = ' + chunk.length);
+    console.error('recv data! nchars = ' + chunk.length);
     buffer += chunk;
   });
 
@@ -38,7 +38,7 @@ server.listen(common.PORT, function() {
   });
 
   conn.on('close', function() {
-    common.error('client connection close');
+    console.error('client connection close');
     conn_closed = true;
   });
 });
