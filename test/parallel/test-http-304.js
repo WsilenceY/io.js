@@ -16,7 +16,7 @@ s.listen(common.PORT, function() {
                       if (err) throw err;
                       s.close();
                       console.error('curled response correctly');
-                      console.error(common.inspect(stdout));
+                      console.error(JSON.stringify(stdout));
                     });
 });
 

@@ -10,5 +10,5 @@ while (files.length < 256)
   files.push(fs.openSync(__filename, 'r'));
 
 var r = process.memoryUsage();
-console.log(common.inspect(r));
+console.log(r);
 assert.equal(true, r['rss'] > 0);
