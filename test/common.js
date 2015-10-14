@@ -8,7 +8,8 @@ var child_process = require('child_process');
 const stream = require('stream');
 const util = require('util');
 
-const testRoot = process.env.NODE_TEST_DIR || path.dirname(__filename);
+const testRoot = path.resolve(process.env.NODE_TEST_DIR ||
+                              path.dirname(__filename));
 
 exports.testDir = path.dirname(__filename);
 exports.fixturesDir = path.join(exports.testDir, 'fixtures');
