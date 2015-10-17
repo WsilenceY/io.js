@@ -2,6 +2,14 @@
 // Flags: --expose_internals
 
 const common = require('../common');
+
+if (common.isWindows) {
+  console.log('1..0 # Skipped: Win32 uses ACLs for file permissions, ' +
+              'modes are always 0666 and says nothing about group/other ' +
+              'read access.');
+  return;
+}
+
 const assert = require('assert');
 const path = require('path');
 const fs = require('fs');
