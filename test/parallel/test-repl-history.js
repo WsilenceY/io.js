@@ -18,7 +18,7 @@ const checkResults = common.mustCall(function(err, r) {
   r.input.end();
   const stat = fs.statSync(replHistoryPath);
   const mode = '0' + (stat.mode & parseInt('777', 8)).toString(8);
-  assert.strictEqual(mode, '0600', 'REPL history file should be mode 0600');
+  assert.strictEqual(mode, '0600');
 });
 
 repl.createInternalRepl(
