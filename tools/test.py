@@ -48,6 +48,9 @@ from os.path import join, dirname, abspath, basename, isdir, exists
 from datetime import datetime
 from Queue import Queue, Empty
 
+print utils.GuessOS();
+sys.exit();
+
 logger = logging.getLogger('testrunner')
 skip_regex = re.compile(r'# SKIP\S*\s+(.*)', re.IGNORECASE)
 
