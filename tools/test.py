@@ -1496,6 +1496,8 @@ def Main():
           'system': utils.GuessOS(),
           'arch': arch,
         }
+        print(arch);
+        sys.exit();
         test_list = root.ListTests([], path, context, arch, mode)
         unclassified_tests += test_list
         (cases, unused_rules, all_outcomes) = (
