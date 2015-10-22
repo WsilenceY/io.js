@@ -23,3 +23,6 @@ test-debug-signal-cluster         : PASS,FLAKY
 
 [$system==freebsd]
 test-net-socket-local-address     : PASS,FLAKY
+
+[$arch==ppc]
+test-tick-processor               : PASS, FLAKY
