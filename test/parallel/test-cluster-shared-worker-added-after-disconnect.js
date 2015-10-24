@@ -12,8 +12,10 @@ if (cluster.isMaster) {
     var c = net.connect(common.PORT, function() {
       c.unref();
 
-      Object.keys(cluster.workers).forEach(function(id) {
-        cluster.workers[id].send('die');
+      process.nextTick(function () {
+        Object.keys(cluster.workers).forEach(function(id) {
+          cluster.workers[id].send('die');
+        });
       });
     });
   }
