@@ -34,7 +34,8 @@ server.listen(common.PORT, function() {
   process.send('listening');
 });
 
-process.on('message', function listener() {
+process.on('message', function(msg) {
+  if (msg !== 'die') return;
   server.close(function() {
     process.exit();
   });
