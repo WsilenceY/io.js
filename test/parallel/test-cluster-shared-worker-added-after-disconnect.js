@@ -26,7 +26,7 @@ if (cluster.isMaster) {
   return;
 }
 
-var server = net.createServer({}, function(c) {
+var server = net.createServer(function(c) {
   c.end('bye');
 });
 
