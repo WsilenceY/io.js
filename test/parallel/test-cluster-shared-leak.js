@@ -1,3 +1,6 @@
+// In Node 4.2.1, this test triggers an assertion in cluster.js. The assertion
+// protects against memory leaks. https://github.com/nodejs/node/pull/3510
+
 'use strict';
 const common = require('../common');
 const assert = require('assert');
