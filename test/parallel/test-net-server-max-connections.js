@@ -47,6 +47,7 @@ function makeConnection(index) {
 
   c.on('error', function(e) {
     console.error('error %d: %s', index, e);
+    throw e;
   });
 
   c.on('close', function() {
