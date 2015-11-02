@@ -19,7 +19,9 @@ var server = net.createServer(function(connection) {
   waits.push(function() { connection.end(); });
 });
 
-server.listen(common.PORT, () => makeConnection(0));
+server.listen(common.PORT, function() {
+  makeConnection(0);
+});
 
 server.maxConnections = N / 2;
 
@@ -32,7 +34,7 @@ function makeConnection(index) {
 
   c.on('connect', function() {
     if (index + 1 < N) {
-      makeConnection(index + 1);
+      process.nextTick(() => makeConnection(index + 1));
     }
   });
 
