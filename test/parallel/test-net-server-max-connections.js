@@ -45,10 +45,10 @@ function makeConnection(index) {
     assert.ok(0 < b.length);
   });
 
-  c.on('error', function(e) {
-    console.error('error %d: %s', index, e);
-    throw e;
-  });
+  // c.on('error', function(e) {
+  //   console.error('error %d: %s', index, e);
+  //   throw e;
+  // });
 
   c.on('close', function() {
     console.error('closed %d', index);
