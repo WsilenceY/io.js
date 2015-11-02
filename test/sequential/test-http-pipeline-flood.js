@@ -1,6 +1,6 @@
 'use strict';
-var common = require('../common');
-var assert = require('assert');
+const common = require('../common');
+const assert = require('assert');
 
 // Here we are testing the HTTP server module's flood prevention mechanism.
 // When writeable.write returns false (ie the underlying send() indicated the
@@ -18,19 +18,19 @@ switch (process.argv[2]) {
   case 'child':
     return child();
   default:
-    throw new Error('wtf');
+    throw Error(`Unexpected value: ${process.argv[2]}`);
 }
 
 function parent() {
-  var http = require('http');
-  var bigResponse = new Buffer(10240).fill('x');
+  const http = require('http');
+  const bigResponse = new Buffer(10240).fill('x');
   var gotTimeout = false;
   var childClosed = false;
   var requests = 0;
   var connections = 0;
   var backloggedReqs = 0;
 
-  var server = http.createServer(function(req, res) {
+  const server = http.createServer(function(req, res) {
     requests++;
     res.setHeader('content-length', bigResponse.length);
     if (!res.write(bigResponse)) {
@@ -40,7 +40,7 @@ function parent() {
         // This means the stream should emit no more 'data' events. However we
         // may still be asked to process more requests if they were read before
         // mechanism activated.
-        req.socket.on('data', function() { assert(false); });
+        req.socket.on('data', () => common.fail('Unexpected data received'));
       }
       backloggedReqs++;
     }
@@ -56,9 +56,9 @@ function parent() {
   });
 
   server.listen(common.PORT, function() {
-    var spawn = require('child_process').spawn;
-    var args = [__filename, 'child'];
-    var child = spawn(process.execPath, args, { stdio: 'inherit' });
+    const spawn = require('child_process').spawn;
+    const args = [__filename, 'child'];
+    const child = spawn(process.execPath, args, { stdio: 'inherit' });
     child.on('close', function(code) {
       assert(!code);
       childClosed = true;
@@ -72,17 +72,13 @@ function parent() {
     assert.equal(connections, 1);
     // The number of requests we end up processing before the outgoing
     // connection backs up and requires a drain is implementation-dependent.
-    console.log('server got %d requests', requests);
-    console.log('server sent %d backlogged requests', backloggedReqs);
-
-    console.log('ok');
   });
 }
 
 function child() {
-  var net = require('net');
+  const net = require('net');
 
-  var conn = net.connect({ port: common.PORT });
+  const conn = net.connect({ port: common.PORT });
 
   var req = 'GET / HTTP/1.1\r\nHost: localhost:' +
             common.PORT + '\r\nAccept: */*\r\n\r\n';
@@ -96,10 +92,6 @@ function child() {
   });
 
   conn.on('drain', write);
-
-  process.on('exit', function() {
-    console.log('ok - child');
-  });
 
   function write() {
     while (false !== conn.write(req, 'ascii'));
