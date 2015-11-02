@@ -14,7 +14,7 @@ var closes = 0;
 var waits = [];
 
 var server = net.createServer(function(connection) {
-  console.error('connect %d', count++);
+  console.error('server connect %d', count++);
   connection.write('hello');
   waits.push(function() { connection.end(); });
 });
@@ -33,14 +33,19 @@ function makeConnection(index) {
   var gotData = false;
 
   c.on('connect', function() {
+    console.error(`client connect ${index}`);
     if (index + 1 < N) {
-      process.nextTick(() => makeConnection(index + 1));
+      makeConnection(index + 1);
     }
   });
 
-  c.on('end', function() { c.end(); });
+  c.on('end', function() {
+    console.error(`client end ${index}`)
+    c.end(); 
+  });
 
   c.on('data', function(b) {
+    console.error(`client data ${index}`)
     gotData = true;
     assert.ok(0 < b.length);
   });
