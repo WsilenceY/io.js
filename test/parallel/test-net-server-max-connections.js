@@ -19,9 +19,7 @@ var server = net.createServer(function(connection) {
   waits.push(function() { connection.end(); });
 });
 
-server.listen(common.PORT, function() {
-  makeConnection(0);
-});
+server.listen(common.PORT, () => makeConnection(0));
 
 server.maxConnections = N / 2;
 
@@ -45,10 +43,9 @@ function makeConnection(index) {
     assert.ok(0 < b.length);
   });
 
-  // c.on('error', function(e) {
-  //   console.error('error %d: %s', index, e);
-  //   throw e;
-  // });
+  c.on('error', function(e) {
+    console.error('error %d: %s', index, e);
+  });
 
   c.on('close', function() {
     console.error('closed %d', index);
