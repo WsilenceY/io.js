@@ -167,6 +167,9 @@ Object.defineProperty(exports, 'hasFipsCrypto', {
 
 if (exports.isWindows) {
   exports.PIPE = '\\\\.\\pipe\\libuv-test';
+  if (process.env.TEST_THREAD_ID) {
+    exports.PIPE = +'.' + process.env.TEST_THREAD_ID;
+  }
 } else {
   exports.PIPE = exports.tmpDir + '/test.sock';
 }
