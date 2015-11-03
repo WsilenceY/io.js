@@ -40,7 +40,8 @@ function parent() {
         // This means the stream should emit no more 'data' events. However we
         // may still be asked to process more requests if they were read before
         // mechanism activated.
-        req.socket.on('data', () => common.fail('Unexpected data received'));
+        req.socket.on('data', 
+                      () => common.fail(`Unexpected ${data.length} bytes`));
       }
       backloggedReqs++;
     }
@@ -70,8 +71,6 @@ function parent() {
     assert(gotTimeout);
     assert(childClosed);
     assert.equal(connections, 1);
-    // The number of requests we end up processing before the outgoing
-    // connection backs up and requires a drain is implementation-dependent.
   });
 }
 
@@ -80,8 +79,8 @@ function child() {
 
   const conn = net.connect({ port: common.PORT });
 
-  var req = 'GET / HTTP/1.1\r\nHost: localhost:' +
-            common.PORT + '\r\nAccept: */*\r\n\r\n';
+  var req =
+    `GET / HTTP/1.1\r\nHost: localhost:${common.PORT}\r\nAccept: */*\r\n\r\n`;
 
   req = new Array(10241).join(req);
 
