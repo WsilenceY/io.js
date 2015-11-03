@@ -11,6 +11,10 @@ const util = require('util');
 const testRoot = path.resolve(process.env.NODE_TEST_DIR ||
                               path.dirname(__filename));
 
+if (!path.existsSync(testRoot)) {
+  fs.mkdirSync(testRoot);
+}
+
 exports.testDir = path.dirname(__filename);
 exports.fixturesDir = path.join(exports.testDir, 'fixtures');
 exports.libDir = path.join(exports.testDir, '../lib');
