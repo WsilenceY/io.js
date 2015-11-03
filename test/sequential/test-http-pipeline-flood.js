@@ -41,7 +41,7 @@ function parent() {
         // may still be asked to process more requests if they were read before
         // mechanism activated.
         req.socket.on('data', 
-                      () => common.fail(`Unexpected ${data.length} bytes`));
+                      (data) => common.fail(`Unexpected ${data.length} bytes`));
       }
       backloggedReqs++;
     }
