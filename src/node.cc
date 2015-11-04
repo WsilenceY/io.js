@@ -192,7 +192,6 @@ static void PrintErrorString(const char* format, ...) {
   WriteConsoleW(stderr_handle, wbuf.data(), n, nullptr, nullptr);
 #else
   vfprintf(stderr, format, ap);
-  fflush(stderr);
 #endif
   va_end(ap);
 }
