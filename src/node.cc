@@ -3127,7 +3127,6 @@ void LoadEnvironment(Environment* env) {
   // thrown during process startup.
   try_catch.SetVerbose(true);
 
-  setvbuf( stderr , NULL , _IOLBF , 1024 );
   env->SetMethod(env->process_object(), "_rawDebug", RawDebug);
 
   Local<Value> arg = env->process_object();
