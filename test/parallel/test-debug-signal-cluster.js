@@ -37,8 +37,7 @@ child.stderr.on('data', function(data) {
         type: 'getpids'
       });
     } else if (waitingForDebuggers) {
-      if (! /RawDebug/.test(line))
-        outputLines.push(line);
+      outputLines.push(line);
     }
 
   });

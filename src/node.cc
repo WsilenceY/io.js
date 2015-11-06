@@ -3059,13 +3059,11 @@ static void SignalExit(int signo) {
 // when debugging the stream.Writable class or the process.nextTick
 // function, it is useful to bypass JavaScript entirely.
 static void RawDebug(const FunctionCallbackInfo<Value>& args) {
-  fprintf(stderr, "Entering RawDebug\n");
   CHECK(args.Length() == 1 && args[0]->IsString() &&
         "must be called with a single string");
   node::Utf8Value message(args.GetIsolate(), args[0]);
   PrintErrorString("%s\n", *message);
   fflush(stderr);
-  fprintf(stderr, "Exiting RawDebug\n");
 }
 
 
@@ -3129,6 +3127,7 @@ void LoadEnvironment(Environment* env) {
   // thrown during process startup.
   try_catch.SetVerbose(true);
 
+  setvbuf( stderr , NULL , _IOLBF , 1024 );
   env->SetMethod(env->process_object(), "_rawDebug", RawDebug);
 
   Local<Value> arg = env->process_object();
