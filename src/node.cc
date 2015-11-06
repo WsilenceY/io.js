@@ -201,6 +201,7 @@ static void PrintErrorString(const char* format, ...) {
   }
   uv_mutex_lock(&message_mutex_);
   vfprintf(stderr, format, ap);
+  fflush(stderr);
   uv_mutex_unlock(&message_mutex_);
 #endif
   va_end(ap);
