@@ -193,16 +193,8 @@ static void PrintErrorString(const char* format, ...) {
   std::vector<wchar_t> wbuf(n);
   MultiByteToWideChar(CP_UTF8, 0, out.data(), -1, wbuf.data(), n);
   WriteConsoleW(stderr_handle, wbuf.data(), n, nullptr, nullptr);
-#else
-  if (! mutexDefined) {
-    int err = uv_mutex_init(&message_mutex_);
-    CHECK_EQ(err, 0);
-    mutexDefined = true;
-  }
-  uv_mutex_lock(&message_mutex_);
+#else  
   vfprintf(stderr, format, ap);
-  fflush(stderr);
-  uv_mutex_unlock(&message_mutex_);
 #endif
   va_end(ap);
 }
@@ -3071,11 +3063,18 @@ static void SignalExit(int signo) {
 // when debugging the stream.Writable class or the process.nextTick
 // function, it is useful to bypass JavaScript entirely.
 static void RawDebug(const FunctionCallbackInfo<Value>& args) {
+  if (! mutexDefined) {
+    int err = uv_mutex_init(&message_mutex_);
+    CHECK_EQ(err, 0);
+    mutexDefined = true;
+  }
+  uv_mutex_lock(&message_mutex_);
   CHECK(args.Length() == 1 && args[0]->IsString() &&
         "must be called with a single string");
   node::Utf8Value message(args.GetIsolate(), args[0]);
   PrintErrorString("%s\n", *message);
   fflush(stderr);
+  uv_mutex_unlock(&message_mutex_);
 }
 
 
