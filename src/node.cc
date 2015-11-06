@@ -3063,7 +3063,8 @@ static void RawDebug(const FunctionCallbackInfo<Value>& args) {
   CHECK(args.Length() == 1 && args[0]->IsString() &&
         "must be called with a single string");
   node::Utf8Value message(args.GetIsolate(), args[0]);
-  fputs(*message, stderr);
+  PrintErrorString("*** %s ***\n", *message);
+  fflush(stderr);
 }
 
 
