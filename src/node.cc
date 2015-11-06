@@ -165,6 +165,8 @@ static node::atomic<Isolate*> node_isolate;
 static v8::Platform* default_platform;
 
 
+uv_mutex_t message_mutex_;
+
 static void PrintErrorString(const char* format, ...) {
   va_list ap;
   va_start(ap, format);
@@ -191,7 +193,11 @@ static void PrintErrorString(const char* format, ...) {
   MultiByteToWideChar(CP_UTF8, 0, out.data(), -1, wbuf.data(), n);
   WriteConsoleW(stderr_handle, wbuf.data(), n, nullptr, nullptr);
 #else
+  uv_mutex_init(&message_mutex_);
+  uv_mutex_lock(&message_mutex_);
   vfprintf(stderr, format, ap);
+  uv_mutex_unlock(&message_mutex_);
+  uv_mutex_destroy(&message_mutex_);
 #endif
   va_end(ap);
 }
@@ -3063,7 +3069,7 @@ static void RawDebug(const FunctionCallbackInfo<Value>& args) {
   CHECK(args.Length() == 1 && args[0]->IsString() &&
         "must be called with a single string");
   node::Utf8Value message(args.GetIsolate(), args[0]);
-  PrintErrorString("*** %s ***\n", *message);
+  PrintErrorString("%s\n", *message);
   fflush(stderr);
 }
 
