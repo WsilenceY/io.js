@@ -166,6 +166,7 @@ static v8::Platform* default_platform;
 
 
 uv_mutex_t message_mutex_;
+bool mutexDefined = false;
 
 static void PrintErrorString(const char* format, ...) {
   va_list ap;
@@ -193,11 +194,14 @@ static void PrintErrorString(const char* format, ...) {
   MultiByteToWideChar(CP_UTF8, 0, out.data(), -1, wbuf.data(), n);
   WriteConsoleW(stderr_handle, wbuf.data(), n, nullptr, nullptr);
 #else
-  uv_mutex_init(&message_mutex_);
+  if (! mutexDefined) {
+    int err = uv_mutex_init(&message_mutex_);
+    CHECK_EQ(err, 0);
+    mutexDefined = true;
+  }
   uv_mutex_lock(&message_mutex_);
   vfprintf(stderr, format, ap);
   uv_mutex_unlock(&message_mutex_);
-  uv_mutex_destroy(&message_mutex_);
 #endif
   va_end(ap);
 }
