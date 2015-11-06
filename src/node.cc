@@ -164,10 +164,6 @@ static uv_async_t dispatch_debug_messages_async;
 static node::atomic<Isolate*> node_isolate;
 static v8::Platform* default_platform;
 
-uv_sem_t start_sem_;
-uv_mutex_t message_mutex_;
-bool mutexDefined = false;
-
 static void PrintErrorString(const char* format, ...) {
   va_list ap;
   va_start(ap, format);
@@ -3063,23 +3059,13 @@ static void SignalExit(int signo) {
 // when debugging the stream.Writable class or the process.nextTick
 // function, it is useful to bypass JavaScript entirely.
 static void RawDebug(const FunctionCallbackInfo<Value>& args) {
-  if (! mutexDefined) {
-    int err = uv_sem_init(&start_sem_, 1);
-    CHECK_EQ(err, 0);
-
-    err = uv_mutex_init(&message_mutex_);
-    CHECK_EQ(err, 0);
-    mutexDefined = true;
-  }
-  uv_mutex_lock(&message_mutex_);
-  uv_sem_wait(&start_sem_);
+  fprintf(stderr, "Entering RawDebug\n");
   CHECK(args.Length() == 1 && args[0]->IsString() &&
         "must be called with a single string");
   node::Utf8Value message(args.GetIsolate(), args[0]);
   PrintErrorString("%s\n", *message);
   fflush(stderr);
-  uv_mutex_unlock(&message_mutex_);
-  uv_sem_post(&start_sem_);
+  fprintf(stderr, "Exiting RawDebug\n");
 }
 
 
