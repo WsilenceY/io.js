@@ -40,8 +40,9 @@ function parent() {
         // This means the stream should emit no more 'data' events. However we
         // may still be asked to process more requests if they were read before
         // mechanism activated.
-        req.socket.on('data', 
-                      (data) => common.fail(`Unexpected ${data.length} bytes`));
+        setImmediate(function () {
+          req.socket.on('data', () => common.fail('Unexpected data received'));
+        });
       }
       backloggedReqs++;
     }
