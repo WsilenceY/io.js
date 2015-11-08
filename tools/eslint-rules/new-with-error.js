@@ -12,8 +12,8 @@ module.exports = function(context) {
 
   return {
     'ThrowStatement': function(node) {
-      const arg = node.argument;
-      if (arg.type === 'CallExpression' && arg.callee.name === 'Error') {
+      if (node.argument.type === 'CallExpression' &&
+          /^([A-Z]\w*)?Error$/.test(node.argument.callee.name)) {
         context.report(node, 'Use new keyword when throwing.');
       }
     }
