@@ -13,7 +13,7 @@ module.exports = function(context) {
   return {
     'ThrowStatement': function(node) {
       const arg = node.argument;
-      if ((arg.type === 'CallExpression') && (arg.callee.name === 'Error')) {
+      if (arg.type === 'CallExpression' && arg.callee.name === 'Error') {
         context.report(node, 'Use new keyword when throwing.');
       }
     }
