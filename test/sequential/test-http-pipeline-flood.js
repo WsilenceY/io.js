@@ -18,7 +18,7 @@ switch (process.argv[2]) {
   case 'child':
     return child();
   default:
-    throw Error(`Unexpected value: ${process.argv[2]}`);
+    throw new Error(`Unexpected value: ${process.argv[2]}`);
 }
 
 function parent() {
@@ -34,13 +34,13 @@ function parent() {
     requests++;
     res.setHeader('content-length', bigResponse.length);
     if (!res.write(bigResponse)) {
-      if (backloggedReqs == 0) {
+      if (backloggedReqs === 0) {
         // Once the native buffer fills (ie write() returns false), the flood
         // prevention should kick in.
         // This means the stream should emit no more 'data' events. However we
         // may still be asked to process more requests if they were read before
-        // mechanism activated.
-        setImmediate(function() {
+        // the flood-prevention mechanism activated.
+        setImmediate(() => {
           req.socket.on('data', () => common.fail('Unexpected data received'));
         });
       }
@@ -53,18 +53,18 @@ function parent() {
     connections++;
   });
 
-  server.setTimeout(200, function(conn) {
-    gotTimeout = true;
-  });
-
   server.listen(common.PORT, function() {
     const spawn = require('child_process').spawn;
     const args = [__filename, 'child'];
     const child = spawn(process.execPath, args, { stdio: 'inherit' });
-    child.on('close', function(code) {
-      assert(!code);
+    child.on('close', function() {
       childClosed = true;
       server.close();
+    });
+
+    server.setTimeout(common.platformTimeout(200), function(conn) {
+      gotTimeout = true;
+      child.kill();
     });
   });
 
@@ -80,14 +80,14 @@ function child() {
 
   const conn = net.connect({ port: common.PORT });
 
-  var req =
-    `GET / HTTP/1.1\r\nHost: localhost:${common.PORT}\r\nAccept: */*\r\n\r\n`;
+  var req = 'GET / HTTP/1.1\r\nHost: localhost:' +
+            common.PORT + '\r\nAccept: */*\r\n\r\n';
 
   req = new Array(10241).join(req);
 
   conn.on('connect', function() {
-    //kill child after 1s of flooding
-    setTimeout(function() { conn.destroy(); }, 1000);
+    // Terminate child after flooding.
+    setTimeout(function() { conn.destroy(); }, common.platformTimeout(1000));
     write();
   });
 
