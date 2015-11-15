@@ -143,9 +143,9 @@ test-all: test-build test/gc/node_modules/weak/build/Release/weakref.node
 test-all-valgrind: test-build
 	$(PYTHON) tools/test.py --mode=debug,release --valgrind
 
-test-ci: | build-addons
+test-ci: $(NODE_EXE)
 	$(PYTHON) tools/test.py -p tap --logfile test.tap --mode=release --flaky-tests=$(FLAKY_TESTS) \
-		$(TEST_CI_ARGS) addons message parallel sequential
+		$(TEST_CI_ARGS) internet internet internet internet
 
 test-release: test-build
 	$(PYTHON) tools/test.py --mode=release
