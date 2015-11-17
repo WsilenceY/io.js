@@ -14,7 +14,7 @@ var msgErrBuf = new Buffer(msgErr + '\n');
 
 var args = [
   '-e',
-  `console.log("${msgOut}"); console.error("${msgErr}");`
+  'console.log("' + msgOut + '"); console.error("' + msgErr + '");'
 ];
 
 var ret;
