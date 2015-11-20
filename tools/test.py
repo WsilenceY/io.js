@@ -142,7 +142,7 @@ class ProgressIndicator(object):
         # See https://smartos.org/bugview/OS-2767
         # If ECONNREFUSED on SmartOS, retry the test one time.
         if (output.UnexpectedOutput() and
-          output.sys.platform == 'sunos5' and 
+          sys.platform == 'sunos5' and 
           'ECONNREFUSED' in output.output.stderr):
             sys.stderr.write('ECONNREFUSED encountered on SmartOS; retrying test.')
             output = case.Run()
