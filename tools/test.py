@@ -145,7 +145,7 @@ class ProgressIndicator(object):
           sys.platform == 'sunos5' and 
           'ECONNREFUSED' in output.output.stderr):
             output = case.Run()
-        sys.stderr.write('ECONNREFUSED encountered on SmartOS; retrying test.')
+        sys.stderr.write('ECONNREFUSED encountered on SmartOS; retrying test.\n')
         case.duration = (datetime.now() - start)
       except IOError, e:
         return
