@@ -66,8 +66,12 @@ function rmdirSync(p, originalEr) {
 }
 
 exports.refreshTmpDir = function() {
-  if (!fs.existsSync(testRoot)) {
-    fs.mkdirSync(testRoot);
+  try {
+    fs.accessSync(testRoot, fs.W_OK);
+  } catch (e) {
+    if (e.code === 'ENOENT') {
+      fs.mkdirSync(testRoot);
+    }
   }
 
   rimrafSync(exports.tmpDir);
