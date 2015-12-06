@@ -15,14 +15,18 @@ if (cluster.isMaster) {
   worker1 = cluster.fork();
   worker1.on('message', common.mustCall(function() {
     worker2 = cluster.fork();
-    conn = net.connect(common.PORT, common.mustCall(function() {
-      worker1.send('die');
-      worker2.send('die');
-    }));
-    conn.on('error', function(e) {
-      // ECONNRESET is OK
-      if (e.code !== 'ECONNRESET')
+    // make sure worker2 is listening before doing anything else
+    cluster.once('listening', function() {
+      conn = net.connect(common.PORT, common.mustCall(function() {
+        worker1.send('die');
+        worker2.send('die');
+      }));
+      conn.on('error', function(e) {
+        // ECONNRESET is OK
+        if (e.code === 'ECONNRESET')
+          return;
         throw e;
+      });
     });
   }));
 
