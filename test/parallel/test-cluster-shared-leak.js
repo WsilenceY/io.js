@@ -15,6 +15,11 @@ if (cluster.isMaster) {
   worker1 = cluster.fork();
   worker1.on('message', common.mustCall(function() {
     worker2 = cluster.fork();
+    worker2.on('error', function(e) {
+      // EPIPE is OK on Windows
+      if ((! common.isWindows) || (e.code !== 'EPIPE'))
+        throw e;
+    });
     conn = net.connect(common.PORT, common.mustCall(function() {
       worker1.send('die');
       worker2.send('die');
