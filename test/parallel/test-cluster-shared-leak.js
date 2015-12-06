@@ -17,8 +17,9 @@ if (cluster.isMaster) {
     worker2 = cluster.fork();
     worker2.on('error', function(e) {
       // EPIPE is OK on Windows
-      if ((! common.isWindows) || (e.code !== 'EPIPE'))
-        throw e;
+      if (common.isWindows && e.code === 'EPIPE')
+        return;
+      throw e;
     });
     conn = net.connect(common.PORT, common.mustCall(function() {
       worker1.send('die');
@@ -26,8 +27,9 @@ if (cluster.isMaster) {
     }));
     conn.on('error', function(e) {
       // ECONNRESET is OK
-      if (e.code !== 'ECONNRESET')
-        throw e;
+      if (e.code === 'ECONNRESET')
+        return;
+      throw e;
     });
   }));
 
