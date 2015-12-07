@@ -13,18 +13,16 @@ if (cluster.isMaster) {
   var conn, worker1, worker2;
 
   worker1 = cluster.fork();
-  worker1.on('message', common.mustCall(function() {
-    console.error('worker1 message');
+  worker1.on('message', common.mustCall(function(msg) {
     worker2 = cluster.fork();
+    console.error(Object.keys(cluster.workers).length);
     worker2.on('error', function(e) {
-      console.error('worker2 error');
       // EPIPE is OK on Windows
       if (common.isWindows && e.code === 'EPIPE')
         return;
       throw e;
     });
     conn = net.connect(common.PORT, common.mustCall(function() {
-      console.error('conn connect');
       worker1.send('die');
       worker2.send('die');
     }));
@@ -38,17 +36,10 @@ if (cluster.isMaster) {
   }));
 
   cluster.on('exit', function(worker, exitCode, signalCode) {
-    console.error('cluster exit');
     assert(worker === worker1 || worker === worker2);
     assert.strictEqual(exitCode, 0);
     assert.strictEqual(signalCode, null);
-    if (worker === worker1) {
-      console.error('worker1');
-    } else {
-      console.error('worker2');
-    }
     if (Object.keys(cluster.workers).length === 0) {
-      console.error('destroying!');
       conn.destroy();
     }
   });
@@ -56,23 +47,17 @@ if (cluster.isMaster) {
   return;
 }
 
-console.error('we are a worker');
-
 var server = net.createServer(function(c) {
-  console.error('server connect');
   c.end('bye');
 });
 
 server.listen(common.PORT, function() {
-  console.error('server listening');
   process.send('listening');
 });
 
 process.on('message', function(msg) {
-  console.error('process message');
   if (msg !== 'die') return;
   server.close(function() {
-    console.error('server close');
     setImmediate(() => process.disconnect());
   });
 });
