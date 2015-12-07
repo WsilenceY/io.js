@@ -42,12 +42,21 @@ if (cluster.isMaster) {
     assert(worker === worker1 || worker === worker2);
     assert.strictEqual(exitCode, 0);
     assert.strictEqual(signalCode, null);
-    if (Object.keys(cluster.workers).length === 0)
+    if (worker === worker1) {
+      console.error('worker1');
+    } else {
+      console.error('worker2');
+    }
+    if (Object.keys(cluster.workers).length === 0) {
+      console.error('destroying!');
       conn.destroy();
+    }
   });
 
   return;
 }
+
+console.error('we are a worker');
 
 var server = net.createServer(function(c) {
   console.error('server connect');
