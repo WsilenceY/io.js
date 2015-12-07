@@ -14,18 +14,22 @@ if (cluster.isMaster) {
 
   worker1 = cluster.fork();
   worker1.on('message', common.mustCall(function() {
+    console.error('worker1 message');
     worker2 = cluster.fork();
     worker2.on('error', function(e) {
+      console.error('worker2 error');
       // EPIPE is OK on Windows
       if (common.isWindows && e.code === 'EPIPE')
         return;
       throw e;
     });
     conn = net.connect(common.PORT, common.mustCall(function() {
-      worker2.send('die');
+      console.error('conn connect');
       worker1.send('die');
+      worker2.send('die');
     }));
     conn.on('error', function(e) {
+      console.error('conn error');
       // ECONNRESET is OK
       if (e.code === 'ECONNRESET')
         return;
@@ -34,6 +38,7 @@ if (cluster.isMaster) {
   }));
 
   cluster.on('exit', function(worker, exitCode, signalCode) {
+    console.error('cluster exit');
     assert(worker === worker1 || worker === worker2);
     assert.strictEqual(exitCode, 0);
     assert.strictEqual(signalCode, null);
@@ -45,16 +50,20 @@ if (cluster.isMaster) {
 }
 
 var server = net.createServer(function(c) {
+  console.error('server connect');
   c.end('bye');
 });
 
 server.listen(common.PORT, function() {
+  console.error('server listening');
   process.send('listening');
 });
 
 process.on('message', function(msg) {
+  console.error('process message');
   if (msg !== 'die') return;
   server.close(function() {
+    console.error('server close');
     setImmediate(() => process.disconnect());
   });
 });
