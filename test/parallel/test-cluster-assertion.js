@@ -27,4 +27,8 @@ if (cluster.isMaster) {
   return;
 }
 
-process.send('disconnect');
+var server = net.createServer();
+
+server.listen(common.PORT, function() {
+  process.send('listening');
+});
