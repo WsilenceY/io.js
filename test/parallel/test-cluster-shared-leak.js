@@ -17,6 +17,7 @@ if (cluster.isMaster) {
     worker2 = cluster.fork();
     console.error(Object.keys(cluster.workers).length);
     worker2.on('error', function(e) {
+      console.error('worker2 error');
       // EPIPE is OK on Windows
       if (common.isWindows && e.code === 'EPIPE')
         return;
