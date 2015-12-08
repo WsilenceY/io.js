@@ -3,10 +3,8 @@
 
 'use strict';
 const common = require('../common');
-const assert = require('assert');
 const net = require('net');
 const cluster = require('cluster');
-cluster.schedulingPolicy = cluster.SCHED_NONE;
 
 if (cluster.isMaster) {
   var worker1, worker2;
