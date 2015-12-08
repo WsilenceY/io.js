@@ -11,7 +11,7 @@ cluster.schedulingPolicy = cluster.SCHED_NONE;
 
 if (cluster.isMaster) {
   var conn, worker1, worker2;
-  
+
   worker1 = cluster.fork();
   worker1.on('message', common.mustCall(function() {
     worker2 = cluster.fork();
@@ -21,9 +21,8 @@ if (cluster.isMaster) {
     }));
     conn.on('error', function(e) {
       // ECONNRESET is OK
-      if (e.code === 'ECONNRESET')
-        return;
-      throw e;
+      if (e.code !== 'ECONNRESET')
+        throw e;
     });
     worker2.send('die');
   }));
