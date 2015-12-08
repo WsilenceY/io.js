@@ -14,7 +14,7 @@ if (cluster.isMaster) {
   worker1.on('message', common.mustCall(function() {
     worker2 = cluster.fork();
     worker1.disconnect();
-    // worker2.disconnect();
+    worker2.disconnect();
   }));
 
   return;
