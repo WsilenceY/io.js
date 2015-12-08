@@ -16,7 +16,7 @@ if (cluster.isMaster) {
   worker1.on('message', common.mustCall(function() {
     worker2 = cluster.fork();
     conn = net.connect(common.PORT, common.mustCall(function() {
-      worker1.send('die');
+      worker1.disconnect();
       worker2.disconnect();
     }));
     conn.on('error', function(e) {
@@ -43,11 +43,4 @@ var server = net.createServer(function(c) {
 
 server.listen(common.PORT, function() {
   process.send('listening');
-});
-
-process.on('message', function(msg) {
-  if (msg !== 'die') return;
-  server.close(function() {
-    setImmediate(() => process.disconnect());
-  });
 });
