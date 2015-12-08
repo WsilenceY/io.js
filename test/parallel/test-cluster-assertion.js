@@ -1,4 +1,4 @@
-// In Node 5.1.1, this test throws an AssertionError in
+// In Node 5.1.1 on Linux, this test throws an AssertionError in
 // `internal/child_process.js`.
 
 'use strict';
