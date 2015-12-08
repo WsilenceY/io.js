@@ -26,11 +26,3 @@ if (cluster.isMaster) {
 
   return;
 }
-
-var server = net.createServer(function(c) {
-  c.end('bye');
-});
-
-server.listen(common.PORT, function() {
-  process.send('listening');
-});
