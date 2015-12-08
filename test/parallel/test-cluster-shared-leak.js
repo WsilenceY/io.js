@@ -13,26 +13,36 @@ if (cluster.isMaster) {
   var conn, worker1, worker2;
 
   worker1 = cluster.fork();
-  worker1.on('message', common.mustCall(function() {
-    worker2 = cluster.fork();
-    worker2.on('error', function(e) {
-      console.error('worker2 error');
-      // EPIPE is OK on Windows
-      if (common.isWindows && e.code === 'EPIPE')
-        return;
-      throw e;
-    });
-    conn = net.connect(common.PORT, common.mustCall(function() {
-      worker1.send('die');
-      worker2.send('die');
-    }));
-    conn.on('error', function(e) {
-      // ECONNRESET is OK
-      if (e.code === 'ECONNRESET')
-        return;
-      throw e;
-    });
-  }));
+  worker1.on('message', common.mustCall(function(msg) {
+    if (msg === 'listening') {
+      worker2 = cluster.fork();
+      // worker2.on('error', function(e) {
+      //   console.error('worker2 error');
+      //   // EPIPE is OK on Windows
+      //   if (common.isWindows && e.code === 'EPIPE')
+      //     return;
+      //   throw e;
+      // });
+      worker2.on('message', common.mustCall(function(msg) {
+        if (msg === 'listening') {
+          worker1.send('worker2 is up');
+        }
+      }));
+    }
+
+    if (msg === 'create connection') {
+      conn = net.connect(common.PORT, common.mustCall(function() {
+        worker1.send('die');
+        worker2.send('die');
+      }));
+      conn.on('error', function(e) {
+        // ECONNRESET is OK
+        if (e.code === 'ECONNRESET')
+          return;
+        throw e;
+      });
+    }
+  }, 2));
 
   cluster.on('exit', function(worker, exitCode, signalCode) {
     assert(worker === worker1 || worker === worker2);
@@ -54,8 +64,13 @@ server.listen(common.PORT, function() {
 });
 
 process.on('message', function(msg) {
-  if (msg !== 'die') return;
-  server.close(function() {
-    setImmediate(() => process.disconnect());
-  });
+  if (msg === 'die') {
+    server.close(function() {
+      setImmediate(() => process.disconnect());
+    });
+  }
+
+  if (msg === 'worker2 is up') {
+    process.send('create connection');
+  }
 });
