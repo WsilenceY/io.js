@@ -18,12 +18,6 @@ if (cluster.isMaster) {
     worker2.disconnect();
   }));
 
-  cluster.on('exit', function(worker, exitCode, signalCode) {
-    assert(worker === worker1 || worker === worker2);
-    assert.strictEqual(exitCode, 0);
-    assert.strictEqual(signalCode, null);
-  });
-
   return;
 }
 
