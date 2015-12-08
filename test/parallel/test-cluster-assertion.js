@@ -26,3 +26,5 @@ if (cluster.isMaster) {
 
   return;
 }
+
+process.send('disconnect');
