@@ -24,6 +24,7 @@ const srv = net.createServer(function onConnection(conn) {
     srv.unref();
   });
 }).listen(common.PORT, function() {
+  console.error('listen');
   const client = net.connect({ port: common.PORT });
   client.on('connect', function onConnect() {
     console.error('client');
