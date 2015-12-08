@@ -10,28 +10,28 @@ buf.fill(0x62);
 var errs = [];
 
 const srv = net.createServer(function onConnection(conn) {
-  if (common.isWindows) {
-    // Windows-specific handling. See:
-    //   * https://github.com/nodejs/node/pull/4062
-    //   * https://github.com/nodejs/node/issues/4057
-    setTimeout(() => { conn.write(buf); }, 100);
-  } else {
-    conn.write(buf);
-  }
+  console.error('server');
+  conn.write(buf);
 
-  conn.on('error', function(err) {
+  conn.on('error', function onError(err) {
+    console.error('error');
     errs.push(err);
     if (errs.length > 1)
       assert(errs[0] !== errs[1], 'Should not get the same error twice');
   });
-  conn.on('close', function() {
+  conn.on('close', function onClose() {
+    console.error('close');
     srv.unref();
   });
 }).listen(common.PORT, function() {
   const client = net.connect({ port: common.PORT });
-  client.on('connect', client.destroy);
+  client.on('connect', function onConnect() {
+    console.error('client');
+    client.destroy();
+  });
 });
 
-process.on('exit', function() {
+process.on('exit', function onExit() {
+  console.error('exit');
   assert.equal(errs.length, 1);
 });
