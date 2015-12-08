@@ -11,11 +11,10 @@ cluster.schedulingPolicy = cluster.SCHED_NONE;
 
 if (cluster.isMaster) {
   var conn, worker1, worker2;
-
+  
   worker1 = cluster.fork();
   worker1.on('message', common.mustCall(function() {
     worker2 = cluster.fork();
-    worker2.send('die');
     // make sure worker2 is listening before doing anything else
     conn = net.connect(common.PORT, common.mustCall(function() {
       worker1.send('die');
@@ -26,6 +25,7 @@ if (cluster.isMaster) {
         return;
       throw e;
     });
+    worker2.send('die');
   }));
 
   cluster.on('exit', function(worker, exitCode, signalCode) {
