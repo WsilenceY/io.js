@@ -152,6 +152,11 @@ class ProgressIndicator(object):
       if self.shutdown_event.is_set():
         return
       self.lock.acquire()
+      if output.ShouldExit():
+        self.lock.release()
+        PrintError("\nThe temporary folder you specified doesn't exist or" \
+              " can't be written to. Take necessary actions and try again")
+        os._exit(1)
       if output.UnexpectedOutput():
         if FLAKY in output.test.outcomes and self.flaky_tests_mode == DONTCARE:
           self.flaky_failed.append(output)
@@ -496,6 +501,9 @@ class TestOutput(object):
     self.output = output
     self.store_unexpected_output = store_unexpected_output
     self.diagnostic = []
+
+  def ShouldExit(self):
+    return self.output.exit_code == 101
 
   def UnexpectedOutput(self):
     if self.HasCrashed():

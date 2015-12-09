@@ -70,7 +70,7 @@ exports.refreshTmpDir = function() {
     fs.accessSync(testRoot, fs.W_OK);
   } catch (e) {
     if (e.code === 'ENOENT') {
-      fs.mkdirSync(testRoot);
+      process.exit(101);
     }
   }
 
