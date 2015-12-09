@@ -17,7 +17,7 @@ if (cluster.isMaster) {
     worker2 = cluster.fork();
     conn = net.connect(common.PORT, common.mustCall(function() {
       worker1.disconnect();
-      worker2.disconnect();
+      worker2.on('online', common.mustCall(worker2.disconnect));
     }));
     conn.on('error', function(e) {
       // ECONNRESET is OK
