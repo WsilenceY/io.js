@@ -10,8 +10,10 @@ buf.fill(0x62);
 var errs = [];
 
 const srv = net.createServer(function onConnection(conn) {
-  console.error('server');
-  conn.write(buf);
+  process.nextTick(function () {
+    console.error('nexttick');
+    conn.write(buf);
+  });
 
   conn.on('error', function onError(err) {
     console.error('error');
@@ -20,19 +22,16 @@ const srv = net.createServer(function onConnection(conn) {
       assert(errs[0] !== errs[1], 'Should not get the same error twice');
   });
   conn.on('close', function onClose() {
-    console.error('close');
     srv.unref();
   });
 }).listen(common.PORT, function() {
-  console.error('listen');
   const client = net.connect({ port: common.PORT });
   client.on('connect', function onConnect() {
-    console.error('client');
+    console.error('destroying');
     client.destroy();
   });
 });
 
 process.on('exit', function onExit() {
-  console.error('exit');
   assert.equal(errs.length, 1);
 });
