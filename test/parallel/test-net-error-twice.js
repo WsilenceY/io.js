@@ -11,12 +11,10 @@ var errs = [];
 
 const srv = net.createServer(function onConnection(conn) {
   process.nextTick(function () {
-    console.error('nexttick');
     conn.write(buf);
   });
 
   conn.on('error', function onError(err) {
-    console.error('error');
     errs.push(err);
     if (errs.length > 1)
       assert(errs[0] !== errs[1], 'Should not get the same error twice');
@@ -27,7 +25,6 @@ const srv = net.createServer(function onConnection(conn) {
 }).listen(common.PORT, function() {
   const client = net.connect({ port: common.PORT });
   client.on('connect', function onConnect() {
-    console.error('destroying');
     client.destroy();
   });
 });
