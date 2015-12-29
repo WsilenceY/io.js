@@ -66,14 +66,6 @@ function rmdirSync(p, originalEr) {
 }
 
 exports.refreshTmpDir = function() {
-  try {
-    fs.accessSync(testRoot, fs.W_OK);
-  } catch (e) {
-    if (e.code === 'ENOENT') {
-      process.exit(101);
-    }
-  }
-
   rimrafSync(exports.tmpDir);
   fs.mkdirSync(exports.tmpDir);
 };
