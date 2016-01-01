@@ -57,17 +57,6 @@ if (cluster.isWorker) {
 
   var fork = require('child_process').fork;
 
-  var isAlive = function(pid) {
-    try {
-      //this will throw an error if the process is dead
-      process.kill(pid, 0);
-
-      return true;
-    } catch (e) {
-      return false;
-    }
-  };
-
   var existMaster = false;
   var existWorker = false;
 
@@ -88,37 +77,22 @@ if (cluster.isWorker) {
 
   // When cluster is dead
   master.on('exit', function(code) {
-
     // Check that the cluster died accidently
     existMaster = !!code;
-
-    // Give the workers time to shut down
-    var timeout = 200;
-    if (common.isAix) {
-      // AIX needs more time due to default exit performance
-      timeout = 1000;
-    }
-    setTimeout(checkWorkers, timeout);
-
-    function checkWorkers() {
-      // When master is dead all workers should be dead to
-      var alive = false;
-      workers.forEach(function(pid) {
-        if (isAlive(pid)) {
-          alive = true;
-        }
-      });
-
-      // If a worker was alive this did not act as expected
-      existWorker = !alive;
-    }
   });
 
   process.once('exit', function() {
-    var m = 'The master did not die after an error was throwed';
-    assert.ok(existMaster, m);
-    m = 'The workers did not die after an error in the master';
-    assert.ok(existWorker, m);
+    assert.ok(existMaster, 'master did not die after an error was thrown');
+    workers.forEach(function(pid) {
+      var exited;
+      try {
+        // this will throw an error if the process is dead
+        process.kill(pid, 0);
+        exited = false;
+      } catch (e) {
+        exited = true;
+      }
+      assert.ok(exited, 'A worker did not die after an error in the master');
+    });
   });
-
 }
