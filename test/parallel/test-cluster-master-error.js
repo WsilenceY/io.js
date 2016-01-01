@@ -58,7 +58,6 @@ if (cluster.isWorker) {
   var fork = require('child_process').fork;
 
   var existMaster = false;
-  var existWorker = false;
 
   // List all workers
   var workers = [];
