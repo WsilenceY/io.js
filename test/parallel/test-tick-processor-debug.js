@@ -7,13 +7,18 @@ var common = require('../common');
 common.refreshTmpDir();
 process.chdir(common.tmpDir);
 
-// Unknown checked for to prevent flakiness, if pattern is not found,
-// then a large number of unknown ticks should be present
-runTest(/LazyCompile.*\[eval\]:1|.*%  UNKNOWN/,
+if (common.isWindows ||
+    common.isSunOS ||
+    common.isAix ||
+    common.isLinuxPPCBE ||
+    common.isFreeBSD) {
+  console.log('1..0 # Skipped: C++ symbols are not mapped for this os.');
+  return;
+}
+
+runTest(/RunInDebugContext/,
   `function f() {
-     for (var i = 0; i < 1000000; i++) {
-       i++;
-     }
+     require('vm').runInDebugContext('Debug');
      setImmediate(function() { f(); });
    };
    setTimeout(function() { process.exit(0); }, 2000);
