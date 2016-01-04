@@ -1,22 +1,17 @@
 'use strict';
-var common = require('../common');
-var assert = require('assert');
-var Buffer = require('buffer').Buffer;
-var dgram = require('dgram');
+const common = require('../common');
+const assert = require('assert');
+const Buffer = require('buffer').Buffer;
+const dgram = require('dgram');
 
-var debug = false;
 var tests_run = 0;
 
 function pingPongTest(port, host) {
   var callbacks = 0;
-  var N = 500;
+  const N = 500;
   var count = 0;
-  var sent_final_ping = false;
 
-  var server = dgram.createSocket('udp4', function(msg, rinfo) {
-    if (debug) console.log('server got: ' + msg +
-                           ' from ' + rinfo.address + ':' + rinfo.port);
-
+  const server = dgram.createSocket('udp4', function(msg, rinfo) {
     if (/PING/.exec(msg)) {
       var buf = new Buffer(4);
       buf.write('PONG');
@@ -35,20 +30,18 @@ function pingPongTest(port, host) {
   server.on('listening', function() {
     console.log('server listening on ' + port + ' ' + host);
 
-    var buf = new Buffer('PING'),
-        client = dgram.createSocket('udp4');
+    const buf = new Buffer('PING');
+    const client = dgram.createSocket('udp4');
 
-    client.on('message', function(msg, rinfo) {
-      if (debug) console.log('client got: ' + msg +
-                             ' from ' + rinfo.address + ':' + rinfo.port);
+    client.on('message', function(msg) {
       assert.equal('PONG', msg.toString('ascii'));
 
+      console.log(`received PONG number ${count} on ${port}`);
       count += 1;
 
       if (count < N) {
         client.send(buf, 0, buf.length, port, 'localhost');
       } else {
-        sent_final_ping = true;
         client.send(buf, 0, buf.length, port, 'localhost', function() {
           client.close();
         });
