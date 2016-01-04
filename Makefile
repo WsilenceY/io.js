@@ -87,8 +87,8 @@ check: test
 cctest: all
 	@out/$(BUILDTYPE)/$@
 
-test: | cctest  # Depends on 'all'.
-	$(PYTHON) tools/test.py --mode=release message parallel sequential -J
+test: | build-faketime cctest # faketime needed for timers; cctest depends on 'all'
+	$(PYTHON) tools/test.py --mode=release message parallel sequential timers -J
 	$(MAKE) jslint
 	$(MAKE) cpplint
 
@@ -132,6 +132,9 @@ test/addons/.buildstamp: $(ADDONS_BINDING_GYPS) | test/addons/.docbuildstamp
 # TODO(bnoordhuis) Force rebuild after gyp or node-gyp update.
 build-addons: $(NODE_EXE) test/addons/.buildstamp
 
+build-faketime: 
+	$(MAKE) --directory=tools faketime
+
 test-gc: all test/gc/node_modules/weak/build/Release/weakref.node
 	$(PYTHON) tools/test.py --mode=release gc
 
@@ -143,9 +146,9 @@ test-all: test-build test/gc/node_modules/weak/build/Release/weakref.node
 test-all-valgrind: test-build
 	$(PYTHON) tools/test.py --mode=debug,release --valgrind
 
-test-ci: | build-addons
+test-ci: | build-addons build-faketime
 	$(PYTHON) tools/test.py -p tap --logfile test.tap --mode=release --flaky-tests=$(FLAKY_TESTS) \
-		$(TEST_CI_ARGS) addons message parallel sequential
+		$(TEST_CI_ARGS) addons message parallel sequential timers
 
 test-release: test-build
 	$(PYTHON) tools/test.py --mode=release
@@ -177,8 +180,7 @@ test-npm-publish: $(NODE_EXE)
 test-addons: test-build
 	$(PYTHON) tools/test.py --mode=release addons
 
-test-timers:
-	$(MAKE) --directory=tools faketime
+test-timers: | build-faketime
 	$(PYTHON) tools/test.py --mode=release timers
 
 test-timers-clean:
