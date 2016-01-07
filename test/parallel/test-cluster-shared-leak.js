@@ -18,6 +18,12 @@ if (cluster.isMaster) {
     worker2.on('online', function() {
       conn = net.connect(common.PORT, common.mustCall(function() {
         worker1.send('die');
+        // Because of the way this test has to be written to trigger the
+        // resource leak in Node 4.2.1, Worker 2 might get EPIPE. It's OK.
+        worker2.on('error', function(e) {
+          if (e.code !== 'EPIPE')
+            throw e;
+        });
         worker2.send('die');
       }));
       conn.on('error', function(e) {
