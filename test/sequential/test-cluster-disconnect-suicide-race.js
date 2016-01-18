@@ -7,6 +7,11 @@ const assert = require('assert');
 const cluster = require('cluster');
 
 if (cluster.isMaster) {
+  cluster.on('exit', (worker, code) => {
+    if (code)
+      common.fail('worker exited with error');
+  });
+
   return cluster.fork();
 }
 
@@ -14,10 +19,10 @@ var eventFired = false;
 
 cluster.worker.disconnect();
 
-cluster.worker.on('disconnect', common.mustCall(() => {
-  eventFired = true;
-}));
-
 process.nextTick(common.mustCall(() => {
   assert.strictEqual(eventFired, false, 'disconnect event should wait for ack');
+}));
+
+cluster.worker.on('disconnect', common.mustCall(() => {
+  eventFired = true;
 }));
