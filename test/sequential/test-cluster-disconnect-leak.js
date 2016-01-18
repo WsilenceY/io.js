@@ -3,7 +3,6 @@
 // Test fails in Node v4.2.0 and passes in v4.2.1 and newer.
 
 const common = require('../common');
-const assert = require('assert');
 const net = require('net');
 const cluster = require('cluster');
 
