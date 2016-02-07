@@ -36,17 +36,10 @@ function pingPongTest(port, host) {
       if (pongsReceived === N) {
         done = true;
         client.close();
+        server.close();
+        assert(pingsReceived >= N);
       }
     });
-
-    client.on('close', common.mustCall(function() {
-      console.log('client has closed, closing server');
-      assert(pingsReceived >= N);
-      assert.strictEqual(pongsReceived, N);
-      server.close();
-      if (++testsRun === 3)
-        process.exit();
-    }));
 
     client.on('error', function(e) {
       throw e;
