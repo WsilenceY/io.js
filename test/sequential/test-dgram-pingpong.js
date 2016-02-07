@@ -1,12 +1,17 @@
 'use strict';
+const activeHandles = require('active-handles')
 const common = require('../common');
 const assert = require('assert');
 const dgram = require('dgram');
+
+let testsRun = 0;
+
 
 function pingPongTest(port, host) {
   let pingsReceived = 0;
   let pongsReceived = 0;
   let done = false;
+
 
   const N = 5;
 
@@ -40,6 +45,10 @@ function pingPongTest(port, host) {
       assert(pingsReceived >= N);
       assert.strictEqual(pongsReceived, N);
       server.close();
+      if (++testsRun === 3) {
+        console.log('printing!');
+        activeHandles.print();
+      }
     }));
 
     client.on('error', function(e) {
