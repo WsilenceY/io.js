@@ -3,16 +3,9 @@ const common = require('../common');
 const assert = require('assert');
 const dgram = require('dgram');
 
-let testsRun = 0;
-
-
 function pingPongTest(port, host) {
   let pingsReceived = 0;
-  let pongsReceived = 0;
   let done = false;
-
-
-  const N = 5;
 
   const server = dgram.createSocket('udp4', function(msg, rinfo) {
     assert.strictEqual('PING', msg.toString('ascii'));
@@ -32,13 +25,10 @@ function pingPongTest(port, host) {
     client.on('message', function(msg) {
       assert.strictEqual('PONG', msg.toString('ascii'));
 
-      pongsReceived++;
-      if (pongsReceived === N) {
-        done = true;
-        client.close();
-        server.close();
-        assert(pingsReceived >= N);
-      }
+      done = true;
+      client.close();
+      server.close();
+      assert(pingsReceived >= 1);
     });
 
     client.on('error', function(e) {
@@ -58,9 +48,8 @@ function pingPongTest(port, host) {
     clientSend();
   });
   server.bind(port, host);
+  return server;
 }
 
-// All are run at once, so run on different ports
-pingPongTest(common.PORT + 0, 'localhost');
-pingPongTest(common.PORT + 1, 'localhost');
-pingPongTest(common.PORT + 2);
+const server = pingPongTest(common.PORT, 'localhost');
+server.on('close', common.mustCall(pingPongTest.bind(this, common.PORT)));
