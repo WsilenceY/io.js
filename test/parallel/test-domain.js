@@ -239,7 +239,9 @@ var fst = fs.createReadStream('stream for nonexistent file');
 d.add(fst);
 expectCaught++;
 
+/*eslint-disable no-sparse-arrays */
 [42, null, , false, function() {}, 'string'].forEach(function(something) {
+/*eslint-enable */
   var d = new domain.Domain();
   d.run(function() {
     process.nextTick(function() {

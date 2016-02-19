@@ -21,12 +21,13 @@ var count = 0;
 
 const server = http.createServer((req, res) => {
   switch (count++) {
-    case 0:
+    case 0: {
       const loc = url.parse(req.url, true).query.lang;
       assert.throws(common.mustCall(() => {
         res.writeHead(302, {Location: `/foo?lang=${loc}`});
       }));
       break;
+    }
     case 1:
       assert.throws(common.mustCall(() => {
         res.writeHead(200, {'foo' : x});
