@@ -355,14 +355,29 @@ console.log(buf.toString('ascii'));
   // Prints: Node.js
 ```
 
-### buf.compare(otherBuffer)
+### buf.compare(otherBuffer, [start, [end]])
 
 * `otherBuffer` {Buffer}
+* `start` {Number}
+* `end` {Number}
 * Return: {Number}
 
-Compares two Buffer instances and returns a number indicating whether `buf`
-comes before, after, or is the same as the `otherBuffer` in sort order.
-Comparison is based on the actual sequence of bytes in each Buffer.
+Compares two Buffer instances or slices and returns a number indicating whether
+`buf` (or the slice thereof) comes before, after, or is the same as the
+`otherBuffer` (or the slice thereof) in sort order. Comparison is based on the
+actual sequence of bytes in each Buffer.
+
+If `start` and `end` are omitted, the buffers are compared to each other in
+their entirety.
+
+If `start` is provided but `end` is omitted, the buffers are compared from the
+`start` index to the end of the buffers.
+
+If `start and `end` are provided, the buffers are compared from the `start`
+index until the `end` index.
+
+Note that `start` and `end` are applied to both `buf` and `otherBuffer`, and not
+just `otherBuffer`.
 
 * `0` is returned if `otherBuffer` is the same as `buf`
 * `1` is returned if `otherBuffer` should come *before* `buf` when sorted.
@@ -383,6 +398,8 @@ console.log(buf2.compare(buf1));
   // Prints: 1
 console.log(buf2.compare(buf3));
   // Prints: 1
+console.log(buf1.compare(buf3, 0, 2));
+  // Prints: 0
 
 [buf1, buf2, buf3].sort(Buffer.compare);
   // produces sort order [buf1, buf3, buf2]

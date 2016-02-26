@@ -1369,6 +1369,11 @@ if (common.hasCrypto) {
   assert.equal(Buffer.compare(Buffer(0), Buffer(0)), 0);
   assert.equal(Buffer.compare(Buffer(0), Buffer(1)), -1);
   assert.equal(Buffer.compare(Buffer(1), Buffer(0)), 1);
+
+
+  const e = new Buffer(2).fill('ea');
+  assert.equal(d.compare(e, 1), 0);
+  assert.equal(b.compare(d, 0, 1), 0);
 }
 
 assert.throws(function() {
