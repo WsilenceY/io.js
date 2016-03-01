@@ -83,6 +83,7 @@ rules:
   strict: [2, "global"]
 
   # Custom rules in tools/eslint-rules
+  buffer-init: 2
   new-with-error: [2, "Error", "RangeError", "TypeError", "SyntaxError", "ReferenceError"]
 
 
