@@ -1,16 +1,25 @@
 'use strict';
-var common = require('../common.js');
+const Benchmark = require('benchmark');
+const suite = new Benchmark.Suite();
 
-var bench = common.createBenchmark(main, {});
+var b, i;
 
-function main(conf) {
-  var N = 64 * 1024 * 1024;
-  var b = Buffer(N);
+function setup() {
+  const N = 64 * 1024 * 1024;
+  b = Buffer(N);
   var s = '';
-  var i;
   for (i = 0; i < 256; ++i) s += String.fromCharCode(i);
   for (i = 0; i < N; i += 256) b.write(s, i, 256, 'ascii');
-  bench.start();
-  for (i = 0; i < 32; ++i) b.toString('base64');
-  bench.end(64);
+}
+
+suite.add('buffer-base64-encode', main, {onStart: setup});
+
+suite.on('cycle', function(event) {
+  console.log(String(event.target));
+});
+
+suite.run();
+
+function main() {
+  b.toString('base64');
 }

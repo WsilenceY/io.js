@@ -1,27 +1,33 @@
 'use strict';
+const Benchmark = require('benchmark');
+const suite = new Benchmark.Suite();
 
-const common = require('../common.js');
+var buf;
 
-const bench = common.createBenchmark(main, {
-  arg: ['true', 'false'],
-  len: [0, 1, 64, 1024],
-  n: [1e7]
+function setup(len) {
+  buf = Buffer(len).fill(42);
+}
+
+[true, false].forEach((arg) => {
+  [0, 1, 64, 1024].forEach((len) => {
+    suite.add(
+      `${arg}-${len}`,
+      main.bind(null, arg),
+      { onStart: setup.bind(null, len) }
+    );
+  });
 });
 
-function main(conf) {
-  const arg = conf.arg === 'true';
-  const len = conf.len | 0;
-  const n = conf.n | 0;
-  const buf = Buffer(len).fill(42);
+suite.on('cycle', function(event) {
+  console.log(String(event.target));
+});
 
-  var i;
-  bench.start();
+suite.run();
+
+function main(arg) {
   if (arg) {
-    for (i = 0; i < n; i += 1)
-      buf.toString('utf8');
+    buf.toString('utf8');
   } else {
-    for (i = 0; i < n; i += 1)
-      buf.toString();
+    buf.toString();
   }
-  bench.end(n);
 }

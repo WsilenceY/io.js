@@ -1,42 +1,55 @@
 'use strict';
-var common = require('../common.js');
-var fs = require('fs');
+const Benchmark = require('benchmark');
+const suite = new Benchmark.Suite();
+
+const fs = require('fs');
 const path = require('path');
 
-var bench = common.createBenchmark(main, {
-  search: ['@', 'SQ', '10x', '--l', 'Alice', 'Gryphon', 'Panther',
-           'Ou est ma chatte?', 'found it very', 'among mad people',
-           'neighbouring pool', 'Soo--oop', 'aaaaaaaaaaaaaaaaa',
-           'venture to go near the house till she had brought herself down to',
-           '</i> to the Caterpillar'],
-  encoding: ['undefined', 'utf8', 'ucs2', 'binary'],
-  type: ['buffer', 'string'],
-  iter: [1]
-});
+var aliceBuffer, search;
 
-function main(conf) {
-  var iter = (conf.iter) * 100000;
-  var aliceBuffer = fs.readFileSync(
+function setup(terms, encoding, type) {
+  aliceBuffer = fs.readFileSync(
     path.resolve(__dirname, '../fixtures/alice.html')
   );
-  var search = conf.search;
-  var encoding = conf.encoding;
-
-  if (encoding === 'undefined') {
-    encoding = undefined;
-  }
 
   if (encoding === 'ucs2') {
     aliceBuffer = new Buffer(aliceBuffer.toString(), encoding);
   }
 
-  if (conf.type === 'buffer') {
+  search = terms;
+  if (type === 'buffer') {
     search = new Buffer(new Buffer(search).toString(), encoding);
   }
+}
 
-  bench.start();
-  for (var i = 0; i < iter; i++) {
-    aliceBuffer.indexOf(search, 0, encoding);
-  }
-  bench.end(iter);
+[
+  '@', 'SQ', '10x', '--l', 'Alice', 'Gryphon', 'Panther', 'Ou est ma chatte?',
+  'found it very', 'among mad people', 'neighbouring pool', 'Soo--oop',
+  'aaaaaaaaaaaaaaaaa',
+  'venture to go near the house till she had brought herself down to',
+  '</i> to the Caterpillar'
+].forEach((terms) => {
+  [
+    undefined, 'utf8', 'ucs2', 'binary'
+  ].forEach((encoding) => {
+    [
+      'buffer', 'string'
+    ].forEach((type) => {
+      suite.add(
+        `${terms}-${encoding}-${type}`,
+        main.bind(null, encoding),
+        {onStart: setup.bind(null, terms, encoding, type)}
+      );
+    });
+  });
+});
+
+suite.on('cycle', function(event) {
+  console.log(String(event.target));
+});
+
+suite.run();
+
+function main(encoding) {
+  aliceBuffer.indexOf(search, 0, encoding);
 }

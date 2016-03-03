@@ -103,12 +103,12 @@ function run() {
         if (!line)
           return;
 
-        var s = line.split(':');
-        var num = +s.pop();
+        const matches = /^(\S+) x ([\d\.]+) ops\/sec\b/.exec(line);
+        line = matches[1];
+        const num = parseFloat(matches[2]);
         if (!num && num !== 0)
           return;
 
-        line = s.join(':');
         var res = results[line] = results[line] || {};
         res[node] = res[node] || [];
         res[node].push(num);

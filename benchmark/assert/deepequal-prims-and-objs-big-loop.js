@@ -1,6 +1,8 @@
 'use strict';
-var common = require('../common.js');
-var assert = require('assert');
+const Benchmark = require('benchmark');
+const suite = new Benchmark.Suite();
+
+const assert = require('assert');
 
 const primValues = {
   'null': null,
@@ -13,21 +15,23 @@ const primValues = {
   'new-array': new Array([1, 2, 3])
 };
 
-var bench = common.createBenchmark(main, {
-  prim: Object.keys(primValues),
-  n: [1e5]
+var prim;
+
+function setup(key) {
+  prim = primValues[key];
+}
+
+Object.keys(primValues)
+.forEach((key) => {
+  suite.add(key, main, {onStart: setup.bind(null, key)});
 });
 
+suite.on('cycle', function(event) {
+  console.log(String(event.target));
+});
+
+suite.run();
+
 function main(conf) {
-  var prim = primValues[conf.prim];
-  var n = +conf.n;
-  var x;
-
-  bench.start();
-
-  for (x = 0; x < n; x++) {
-    assert.deepEqual(new Array([prim]), new Array([prim]));
-  }
-
-  bench.end(n);
+  assert.deepEqual(new Array([prim]), new Array([prim]));
 }

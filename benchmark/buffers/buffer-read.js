@@ -1,32 +1,44 @@
 'use strict';
-var common = require('../common.js');
+const Benchmark = require('benchmark');
+const suite = new Benchmark.Suite();
 
-var bench = common.createBenchmark(main, {
-  noAssert: ['false', 'true'],
-  buffer: ['fast', 'slow'],
-  type: ['UInt8', 'UInt16LE', 'UInt16BE',
-         'UInt32LE', 'UInt32BE',
-         'Int8', 'Int16LE', 'Int16BE',
-         'Int32LE', 'Int32BE',
-         'FloatLE', 'FloatBE',
-         'DoubleLE', 'DoubleBE'],
-  millions: [1]
-});
+const SlowBuffer = require('buffer').SlowBuffer;
 
-function main(conf) {
-  var noAssert = conf.noAssert === 'true';
-  var len = +conf.millions * 1e6;
-  var clazz = conf.buf === 'fast' ? Buffer : require('buffer').SlowBuffer;
-  var buff = new clazz(8);
-  var fn = 'read' + conf.type;
+var buff, testFunction;
+
+function setup(noAssert, clazz, type) {
+  buff = new clazz(8);
+  const fn = 'read' + type;
 
   buff.writeDoubleLE(0, 0, noAssert);
-  var testFunction = new Function('buff', [
-    'for (var i = 0; i !== ' + len + '; i++) {',
-    '  buff.' + fn + '(0, ' + JSON.stringify(noAssert) + ');',
-    '}'
-  ].join('\n'));
-  bench.start();
+  testFunction = new Function(
+    'buff',
+    'buff.' + fn + '(0, ' + JSON.stringify(noAssert) + ');'
+  );
+}
+
+['false', 'true'].forEach((noAssert) => {
+  [Buffer, SlowBuffer].forEach((buffer) => {
+    [
+      'UInt8', 'UInt16LE', 'UInt16BE', 'UInt32LE', 'UInt32BE', 'Int8',
+      'Int16LE', 'Int16BE', 'Int32LE', 'Int32BE', 'FloatLE', 'FloatBE',
+      'DoubleLE', 'DoubleBE'
+    ].forEach((type) => {
+      suite.add(
+        `${noAssert}-${buffer.name}-${type}`,
+        main,
+        {onStart: setup.bind(null, noAssert, buffer, type)}
+      );
+    });
+  });
+});
+
+suite.on('cycle', function(event) {
+  console.log(String(event.target));
+});
+
+suite.run();
+
+function main() {
   testFunction(buff);
-  bench.end(len / 1e6);
 }

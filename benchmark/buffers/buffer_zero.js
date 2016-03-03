@@ -1,18 +1,17 @@
 'use strict';
-
-const common = require('../common.js');
-
-const bench = common.createBenchmark(main, {
-  n: [1024]
-});
+const Benchmark = require('benchmark');
+const suite = new Benchmark.Suite();
 
 const zero = new Buffer(0);
 
-function main(conf) {
-  var n = +conf.n;
-  bench.start();
-  for (let i = 0; i < n * 1024; i++) {
-    new Buffer(zero);
-  }
-  bench.end(n);
+suite.add('buffer_zero', main);
+
+suite.on('cycle', function(event) {
+  console.log(String(event.target));
+});
+
+suite.run();
+
+function main() {
+  new Buffer(zero);
 }

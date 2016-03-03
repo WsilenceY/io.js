@@ -1,23 +1,30 @@
 'use strict';
-var common = require('../common.js');
-var bench = common.createBenchmark(main, {
-  type: ['Array', 'Buffer', 'Int8Array', 'Uint8Array', 'Int16Array',
-         'Uint16Array', 'Int32Array', 'Uint32Array', 'Float32Array',
-         'Float64Array'],
-  n: [25]
+const Benchmark = require('benchmark');
+const suite = new Benchmark.Suite();
+
+const n = 25;
+
+var clazz;
+
+function setup(type) {
+  clazz = global[type];
+}
+
+['Array', 'Buffer', 'Int8Array', 'Uint8Array', 'Int16Array', 'Uint16Array',
+ 'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array']
+.forEach((type) => {
+  suite.add(type, main.bind(null, type), {onStart: setup.bind(null, type)});
 });
 
-function main(conf) {
-  var type = conf.type;
-  var clazz = global[type];
-  var n = +conf.n;
+suite.on('cycle', function(event) {
+  console.log(String(event.target));
+});
 
-  bench.start();
+suite.run();
+
+function main(type) {
   var arr = new clazz(n * 1e6);
-  for (var i = 0; i < 10; ++i) {
-    for (var j = 0, k = arr.length; j < k; ++j) {
-      arr[j] = 0;
-    }
+  for (var j = 0, k = arr.length; j < k; ++j) {
+    arr[j] = 0;
   }
-  bench.end(n);
 }

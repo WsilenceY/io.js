@@ -1,21 +1,18 @@
 'use strict';
-var common = require('../common.js');
-var SlowBuffer = require('buffer').SlowBuffer;
+const Benchmark = require('benchmark');
+const suite = new Benchmark.Suite();
 
-var bench = common.createBenchmark(main, {
-  type: ['fast', 'slow'],
-  n: [1024]
+const SlowBuffer = require('buffer').SlowBuffer;
+
+suite.add('Buffer', main.bind(null, new Buffer(1024)));
+suite.add('SlowBuffer', main.bind(null, new SlowBuffer(1024)));
+
+suite.on('cycle', function(event) {
+  console.log(String(event.target));
 });
 
-var buf = new Buffer(1024);
-var slowBuf = new SlowBuffer(1024);
+suite.run();
 
-function main(conf) {
-  var n = +conf.n;
-  var b = conf.type === 'fast' ? buf : slowBuf;
-  bench.start();
-  for (var i = 0; i < n * 1024; i++) {
-    b.slice(10, 256);
-  }
-  bench.end(n);
+function main(b) {
+  b.slice(10, 256);
 }
