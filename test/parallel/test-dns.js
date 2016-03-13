@@ -90,6 +90,8 @@ assert.doesNotThrow(function() {
   dns.lookup(NaN, noop);
 });
 
+console.error('About to start hints tests...');
+
 /*
  * Make sure that dns.lookup throws if hints does not represent a valid flag.
  * (dns.V4MAPPED | dns.ADDRCONFIG) + 1 is invalid because:
@@ -146,6 +148,8 @@ assert.doesNotThrow(function() {
   }, noop);
 });
 
+console.error('Done with hints tests...');
+
 assert.throws(function() {
   dns.lookupService('0.0.0.0');
 }, /Invalid arguments/);
@@ -154,6 +158,8 @@ assert.throws(function() {
   dns.lookupService('fasdfdsaf', 0, noop);
 }, /"host" argument needs to be a valid IP address/);
 
+console.error('About to start 0.0.0.0 tests...');
+
 assert.doesNotThrow(function() {
   dns.lookupService('0.0.0.0', '0', noop);
 });
@@ -161,6 +167,8 @@ assert.doesNotThrow(function() {
 assert.doesNotThrow(function() {
   dns.lookupService('0.0.0.0', 0, noop);
 });
+
+console.error('About to start invalid port tests...');
 
 assert.throws(function() {
   dns.lookupService('0.0.0.0', null, noop);
