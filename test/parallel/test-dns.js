@@ -174,14 +174,22 @@ assert.throws(function() {
   dns.lookupService('0.0.0.0', null, noop);
 }, /"port" should be >= 0 and < 65536, got "null"/);
 
+console.error('3 more tests');
+
 assert.throws(function() {
   dns.lookupService('0.0.0.0', undefined, noop);
 }, /"port" should be >= 0 and < 65536, got "undefined"/);
+
+console.error('2 more tests');
 
 assert.throws(function() {
   dns.lookupService('0.0.0.0', 65538, noop);
 }, /"port" should be >= 0 and < 65536, got "65538"/);
 
+console.error('1 more test');
+
 assert.throws(function() {
   dns.lookupService('0.0.0.0', 'test', noop);
 }, /"port" should be >= 0 and < 65536, got "test"/);
+
+console.error('all done');
