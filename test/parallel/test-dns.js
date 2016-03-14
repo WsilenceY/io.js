@@ -7,7 +7,7 @@ var dns = require('dns');
 var existing = dns.getServers();
 assert(existing.length);
 
-function noop() {}
+function noop() {if (this && this.msg) console.log(this.msg);}
 
 var goog = [
   '8.8.8.8',
@@ -71,26 +71,24 @@ assert.throws(function() {
 }, 'invalid arguments: hostname must be a string or falsey');
 
 assert.doesNotThrow(function() {
-  dns.lookup('', noop);
+  dns.lookup('', noop.bind({msg: 'line 74'}));
 });
 
 assert.doesNotThrow(function() {
-  dns.lookup(null, noop);
+  dns.lookup(null, noop.bind({msg: 'line 78'}));
 });
 
 assert.doesNotThrow(function() {
-  dns.lookup(undefined, noop);
+  dns.lookup(undefined, noop.bind({msg: 'line 82'}));
 });
 
 assert.doesNotThrow(function() {
-  dns.lookup(0, noop);
+  dns.lookup(0, noop.bind({msg: 'line 86'}));
 });
 
 assert.doesNotThrow(function() {
-  dns.lookup(NaN, noop);
+  dns.lookup(NaN, noop.bind({msg: 'line 90'}));
 });
-
-console.error('About to start hints tests...');
 
 /*
  * Make sure that dns.lookup throws if hints does not represent a valid flag.
@@ -115,40 +113,38 @@ assert.throws(function() {
 }, 'invalid arguments: callback must be passed');
 
 assert.doesNotThrow(function() {
-  dns.lookup('www.google.com', 6, noop);
+  dns.lookup('www.google.com', 6, noop.bind({msg: 'line 116'}));
 });
 
 assert.doesNotThrow(function() {
-  dns.lookup('www.google.com', {}, noop);
+  dns.lookup('www.google.com', {}, noop.bind({msg: 'line 120'}));
 });
 
 assert.doesNotThrow(function() {
   dns.lookup('www.google.com', {
     family: 4,
     hints: 0
-  }, noop);
+  }, noop.bind({msg: 'line 127'}));
 });
 
 assert.doesNotThrow(function() {
   dns.lookup('www.google.com', {
     family: 6,
     hints: dns.ADDRCONFIG
-  }, noop);
+  }, noop.bind({msg: 'line 134'}));
 });
 
 assert.doesNotThrow(function() {
   dns.lookup('www.google.com', {
     hints: dns.V4MAPPED
-  }, noop);
+  }, noop.bind({msg: 'line 140'}));
 });
 
 assert.doesNotThrow(function() {
   dns.lookup('www.google.com', {
     hints: dns.ADDRCONFIG | dns.V4MAPPED
-  }, noop);
+  }, noop.bind({msg: 'line 146'}));
 });
-
-console.error('Done with hints tests...');
 
 assert.throws(function() {
   dns.lookupService('0.0.0.0');
@@ -158,38 +154,26 @@ assert.throws(function() {
   dns.lookupService('fasdfdsaf', 0, noop);
 }, /"host" argument needs to be a valid IP address/);
 
-console.error('About to start 0.0.0.0 tests...');
-
 assert.doesNotThrow(function() {
-  dns.lookupService('0.0.0.0', '0', noop);
+  dns.lookupService('0.0.0.0', '0', noop.bind({msg: 'line 158'}));
 });
 
 assert.doesNotThrow(function() {
-  dns.lookupService('0.0.0.0', 0, noop);
+  dns.lookupService('0.0.0.0', 0, noop.bind({msg: 'line 162'}));
 });
-
-console.error('About to start invalid port tests...');
 
 assert.throws(function() {
   dns.lookupService('0.0.0.0', null, noop);
 }, /"port" should be >= 0 and < 65536, got "null"/);
 
-console.error('3 more tests');
-
 assert.throws(function() {
   dns.lookupService('0.0.0.0', undefined, noop);
 }, /"port" should be >= 0 and < 65536, got "undefined"/);
-
-console.error('2 more tests');
 
 assert.throws(function() {
   dns.lookupService('0.0.0.0', 65538, noop);
 }, /"port" should be >= 0 and < 65536, got "65538"/);
 
-console.error('1 more test');
-
 assert.throws(function() {
   dns.lookupService('0.0.0.0', 'test', noop);
 }, /"port" should be >= 0 and < 65536, got "test"/);
-
-console.error('all done');
