@@ -8,44 +8,22 @@ function noop() {}
 
 dns.setServers([]);
 
-/*
- * Make sure that dns.lookup throws if hints does not represent a valid flag.
- * (dns.V4MAPPED | dns.ADDRCONFIG) + 1 is invalid because:
- * - it's different from dns.V4MAPPED and dns.ADDRCONFIG.
- * - it's different from them bitwise ored.
- * - it's different from 0.
- * - it's an odd number different than 1, and thus is invalid, because
- * flags are either === 1 or even.
- */
-assert.throws(function() {
-  dns.lookup('www.google.com', { hints: (dns.V4MAPPED | dns.ADDRCONFIG) + 1 },
-    noop);
-});
-
-assert.throws(function() {
-  dns.lookup('www.google.com');
-}, 'invalid arguments: callback must be passed');
-
-assert.throws(function() {
-  dns.lookup('www.google.com', 4);
-}, 'invalid arguments: callback must be passed');
-
 assert.doesNotThrow(function() {
-  dns.lookup('www.google.com', 6, noop);
+  dns.lookup('www.google.com', 6, () => {console.log(1);});
 });
 
 assert.doesNotThrow(function() {
-  dns.lookup('www.google.com', {}, noop);
+  dns.lookup('www.google.com', {}, () => {console.log(2);});
 });
 
 assert.doesNotThrow(function() {
   dns.lookup('www.google.com', {
     hints: dns.V4MAPPED
-  }, noop);
+  }, () => {console.log(3);});
 });
 
 assert.doesNotThrow(function() {
   dns.lookup('www.google.com', {
     hints: dns.ADDRCONFIG | dns.V4MAPPED
-  }, noop);
+  }, () => {console.log(4);});
 });
