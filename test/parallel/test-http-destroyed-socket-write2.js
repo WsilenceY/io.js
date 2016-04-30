@@ -29,17 +29,18 @@ server.listen(common.PORT, function() {
     switch (er.code) {
       // This is the expected case
       case 'ECONNRESET':
-      // On windows this sometimes manifests as ECONNABORTED
+        break;
+
+      // On Windows, this sometimes manifests as ECONNABORTED
       case 'ECONNABORTED':
+        break;
+
       // This test is timing sensitive so an EPIPE is not out of the question.
-      // It should be infrequent, given the 50 ms timeout, but not impossible.
       case 'EPIPE':
         break;
+
       default:
-        assert.strictEqual(er.code,
-                           'ECONNRESET',
-                           'Write to a torn down client should RESET or ABORT');
-        break;
+        common.fail(`Unexpected error on write: ${er.code}`);
     }
 
     assert.equal(req.output.length, 0);
