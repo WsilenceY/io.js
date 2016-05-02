@@ -24,7 +24,6 @@ function next() {
   stream.end();
   stream.on('finish', common.mustCall(function() {
     assert.strictEqual(stream.closed, true);
-    assert.strictEqual(stream.fd, null);
     process.nextTick(common.mustCall(next2));
   }));
 }
@@ -46,7 +45,6 @@ function next3() {
   stream.on('finish', common.mustCall(function() {
     process.nextTick(common.mustCall(function() {
       assert.strictEqual(stream.closed, true);
-      assert.strictEqual(stream.fd, null);
     }));
   }));
 }

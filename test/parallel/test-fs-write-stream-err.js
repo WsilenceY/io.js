@@ -39,7 +39,7 @@ fs.close = common.mustCall(function(fd_, cb) {
 
 stream.on('error', common.mustCall(function(err_) {
   console.error('error handler');
-  assert.equal(stream.fd, null);
+  assert.equal(stream.closed, true);
   assert.equal(err_, err);
 }));
 

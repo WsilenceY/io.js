@@ -11,7 +11,7 @@ var err = new Error('BAM');
 stream.on('error', common.mustCall(function errorHandler(err_) {
   console.error('error event');
   process.nextTick(function() {
-    assert.equal(stream.fd, null);
+    assert.equal(stream.closed, true);
     assert.equal(err_, err);
   });
 }));
