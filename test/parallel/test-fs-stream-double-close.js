@@ -1,43 +1,18 @@
 'use strict';
-var common = require('../common');
-var assert = require('assert');
-var fs = require('fs');
+
+const common = require('../common');
+const fs = require('fs');
+const assert = require('assert');
 
 common.refreshTmpDir();
 
-test1(fs.createReadStream(__filename));
-test2(fs.createReadStream(__filename));
-test3(fs.createReadStream(__filename));
+const writeStream = fs.createWriteStream(common.tmpDir + '/fhqwhgads');
 
-test1(fs.createWriteStream(common.tmpDir + '/dummy1'));
-test2(fs.createWriteStream(common.tmpDir + '/dummy2'));
-test3(fs.createWriteStream(common.tmpDir + '/dummy3'));
+writeStream.on('error', common.mustCall((e) => {
+  assert.strictEqual(e.code, 'EBADF');
+}));
 
-function test1(stream) {
-  stream.destroy();
-  stream.destroy();
-}
-
-function test2(stream) {
-  stream.destroy();
-  stream.on('open', function(fd) {
-    stream.destroy();
-    open_cb_called++;
-  });
-  process.on('exit', function() {
-    assert.equal(open_cb_called, 1);
-  });
-  var open_cb_called = 0;
-}
-
-function test3(stream) {
-  stream.on('open', function(fd) {
-    stream.destroy();
-    stream.destroy();
-    open_cb_called++;
-  });
-  process.on('exit', function() {
-    assert.equal(open_cb_called, 1);
-  });
-  var open_cb_called = 0;
-}
+writeStream.close(common.mustCall((e) => {
+  assert.strictEqual(e, undefined);
+  writeStream.close(); // should trigger an error
+}));
