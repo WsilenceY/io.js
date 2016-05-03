@@ -1,13 +1,13 @@
 prefix parallel
 
 # If a known issue does not apply to a platform, list the test name in the
-# appropriate section below, without ".js", followed by ": FAIL". Example:
-# sample-test                        : FAIL
+# appropriate section below, without ".js", followed by ": PASS,FLAKY". Example:
+# sample-test                        : PASS,FLAKY
 
 [true] # This section applies to all platforms
 
 [$system==win32]
-test-stdout-buffer-flush-on-exit: FAIL
+test-stdout-buffer-flush-on-exit: PASS,FLAKY
 
 [$system==linux]
 
