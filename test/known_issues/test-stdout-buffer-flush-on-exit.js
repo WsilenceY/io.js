@@ -5,7 +5,7 @@ require('../common');
 const assert = require('assert');
 const execSync = require('child_process').execSync;
 
-const longLine = 'foo bar baz quux quuz aaa bbb ccc'.repeat(65536);
+const longLine = 'foo bar baz quux quuz aaa bbb ccc'.repeat(Math.pow(2, 17));
 
 if (process.argv[2] === 'child') {
   process.on('exit', () => {
