@@ -1,0 +1,21 @@
+prefix parallel
+
+# If a known issue does not apply to a platform, list the test name in the
+# appropriate section below, without ".js", followed by ": PASS". Example:
+# sample-test                        : PASS
+
+[true] # This section applies to all platforms
+
+[$system==win32]
+test-stdout-buffer-flush-on-exit: PASS
+
+[$system==linux]
+
+[$system==macos]
+
+[$system==solaris]
+
+[$system==freebsd]
+
+[$system==aix]
+
