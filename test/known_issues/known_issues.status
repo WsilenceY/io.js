@@ -1,4 +1,4 @@
-prefix parallel
+prefix known_issues
 
 # If a known issue does not apply to a platform, list the test name in the
 # appropriate section below, without ".js", followed by ": PASS,FLAKY". Example:
