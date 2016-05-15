@@ -16,7 +16,7 @@ child.stderr.setEncoding('utf8');
 
 let stderr = '';
 child.stderr.on('data', (data) => {
-  process.stderr.write(`[DATA] ${data}`);
+  // process.stderr.write(`[DATA] ${data}`);
   stderr += data;
   if (child.killed !== true && stderr.includes('all workers are running')) {
     child.kill();
