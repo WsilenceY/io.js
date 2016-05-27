@@ -21,8 +21,8 @@ if (common.inFreeBSDJail) {
   return;
 }
 
-function launchChildProcess(index) {
-  const worker = fork(__filename, ['child']);
+function launchChildProcesses(port, callback) {
+  const worker = fork(__filename, ['child', port]);
   workers[worker.pid] = worker;
 
   worker.messagesReceived = [];
@@ -53,8 +53,10 @@ function launchChildProcess(index) {
       listening += 1;
 
       if (listening === listeners) {
-        // All child process are listening, so start sending.
-        sendSocket.sendNext();
+        // All child process are listening.
+        callback(msg.port);
+      } else {
+        launchChildProcesses(msg.port, callback);
       }
       return;
     }
@@ -127,47 +129,48 @@ if (process.argv[2] !== 'child') {
   }, TIMEOUT);
 
   // Launch child processes.
-  for (var x = 0; x < listeners; x++) {
-    launchChildProcess(x);
-  }
+  launchChildProcesses(0, callback);
 
-  var sendSocket = dgram.createSocket('udp4');
+  function callback(port) {
+    var sendSocket = dgram.createSocket('udp4');
 
-  // The socket is actually created async now.
-  sendSocket.on('listening', function() {
-    sendSocket.setTTL(1);
-    sendSocket.setBroadcast(true);
-    sendSocket.setMulticastTTL(1);
-    sendSocket.setMulticastLoopback(true);
-  });
+    // The socket is actually created async now.
+    sendSocket.on('listening', function() {
+      sendSocket.setTTL(1);
+      sendSocket.setBroadcast(true);
+      sendSocket.setMulticastTTL(1);
+      sendSocket.setMulticastLoopback(true);
+    });
 
-  sendSocket.on('close', function() {
-    console.error('[PARENT] sendSocket closed');
-  });
+    sendSocket.on('close', function() {
+      console.error('[PARENT] sendSocket closed');
+    });
 
-  sendSocket.sendNext = function() {
-    const buf = messages[i++];
+    sendSocket.sendNext = function() {
+      const buf = messages[i++];
 
-    if (!buf) {
-      try { sendSocket.close(); } catch (e) {}
-      return;
-    }
-
-    sendSocket.send(
-      buf,
-      0,
-      buf.length,
-      common.PORT,
-      LOCAL_BROADCAST_HOST,
-      function(err) {
-        if (err) throw err;
-        console.error('[PARENT] sent "%s" to %s:%s',
-                      buf.toString(),
-                      LOCAL_BROADCAST_HOST, common.PORT);
-        process.nextTick(sendSocket.sendNext);
+      if (!buf) {
+        try { sendSocket.close(); } catch (e) {}
+        return;
       }
-    );
-  };
+
+      sendSocket.send(
+        buf,
+        0,
+        buf.length,
+        port,
+        LOCAL_BROADCAST_HOST,
+        function(err) {
+          if (err) throw err;
+          console.error('[PARENT] sent "%s" to %s:%s',
+                        buf.toString(),
+                        LOCAL_BROADCAST_HOST, port);
+          process.nextTick(sendSocket.sendNext);
+        }
+      );
+    };
+    sendSocket.sendNext();
+  }
 }
 
 if (process.argv[2] === 'child') {
@@ -205,8 +208,8 @@ if (process.argv[2] === 'child') {
         process.exit();
       }, common.platformTimeout(1000));
     });
-    process.send({ listening: true });
+    process.send({ listening: true, port: listenSocket.address().port });
   });
 
-  listenSocket.bind(common.PORT);
+  listenSocket.bind(process.argv[3]);
 }
