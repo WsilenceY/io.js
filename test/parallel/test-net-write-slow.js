@@ -1,20 +1,19 @@
 'use strict';
-require('../common');
-var assert = require('assert');
-var net = require('net');
+const common = require('../common');
+const assert = require('assert');
+const net = require('net');
 
-var SIZE = 2E5;
-var N = 10;
+const SIZE = 2E5;
+const N = 10;
 var flushed = 0;
 var received = 0;
-var buf = Buffer.alloc(SIZE, 'a');
+const buf = Buffer.alloc(SIZE, 'a');
 
-var server = net.createServer(function(socket) {
+const server = net.createServer(function(socket) {
   socket.setNoDelay();
   socket.setTimeout(1000);
   socket.on('timeout', function() {
-    assert.fail(null, null, 'flushed: ' + flushed +
-                ', received: ' + received + '/' + SIZE * N);
+    common.fail(`flushed: ${flushed}, received: ${received}/${SIZE * N}`);
   });
 
   for (var i = 0; i < N; ++i) {
@@ -28,7 +27,7 @@ var server = net.createServer(function(socket) {
   socket.end();
 
 }).listen(0, function() {
-  var conn = net.connect(this.address().port);
+  const conn = net.connect(this.address().port);
   conn.on('data', function(buf) {
     received += buf.length;
     conn.pause();
@@ -42,5 +41,5 @@ var server = net.createServer(function(socket) {
 });
 
 process.on('exit', function() {
-  assert.equal(received, SIZE * N);
+  assert.strictEqual(received, SIZE * N);
 });
