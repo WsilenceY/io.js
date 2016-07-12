@@ -20,7 +20,7 @@ process.chdir(common.tmpDir);
 // then a large number of unknown ticks should be present
 runTest(/LazyCompile.*\[eval\]:1|.*%  UNKNOWN/,
         `function f() {
-           for (var i = 0; i < 1000000; i++) {
+           for (var i = 0; i < 1000; i++) {
              i++;
            }
            setImmediate(function() { f(); });
