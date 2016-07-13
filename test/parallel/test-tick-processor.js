@@ -53,7 +53,7 @@ function runTest(pattern, code) {
   }
   var log = matches[0];
   var out = cp.execSync(process.execPath +
-                        ' --prof-process --call-graph-size=10 ' + log,
+                        ' --prof-process --call-graph-size=99 ' + log,
                         {encoding: 'utf8'});
   assert(pattern.test(out));
   fs.unlinkSync(log);
