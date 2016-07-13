@@ -20,12 +20,12 @@ process.chdir(common.tmpDir);
 // then a large number of unknown ticks should be present
 runTest(/LazyCompile.*\[eval\]:1|.*%  UNKNOWN/,
         `function f() {
+           setTimeout(function() { process.exit(0); }, 2000);
            for (var i = 0; i < 1000000; i++) {
              i++;
            }
            setImmediate(function() { f(); });
          };
-         setInterval(function() { process.exit(0); }, 2000);
          f();`);
 if (common.isWindows ||
     common.isSunOS ||
@@ -37,10 +37,10 @@ if (common.isWindows ||
 }
 runTest(/RunInDebugContext/,
         `function f() {
+           setTimeout(function() { process.exit(0); }, 2000);
            require(\'vm\').runInDebugContext(\'Debug\');
            setImmediate(function() { f(); });
          };
-         setInterval(function() { process.exit(0); }, 2000);
          f();`);
 
 function runTest(pattern, code) {
