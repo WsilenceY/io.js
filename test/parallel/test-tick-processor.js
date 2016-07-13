@@ -25,7 +25,7 @@ runTest(/LazyCompile.*\[eval\]:1|.*%  UNKNOWN/,
            }
            setImmediate(function() { f(); });
          };
-         setTimeout(function() { process.exit(0); }, 2000);
+         setInterval(function() { process.exit(0); }, 2000);
          f();`);
 if (common.isWindows ||
     common.isSunOS ||
@@ -40,7 +40,7 @@ runTest(/RunInDebugContext/,
            require(\'vm\').runInDebugContext(\'Debug\');
            setImmediate(function() { f(); });
          };
-         setTimeout(function() { process.exit(0); }, 2000);
+         setInterval(function() { process.exit(0); }, 2000);
          f();`);
 
 function runTest(pattern, code) {
