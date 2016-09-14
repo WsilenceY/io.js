@@ -4103,9 +4103,14 @@ inline void PlatformInit() {
 
   // Make sure file descriptors 0-2 are valid before we start logging anything.
   for (int fd = STDIN_FILENO; fd <= STDERR_FILENO; fd += 1) {
-    struct stat ignored;
-    if (fstat(fd, &ignored) == 0)
-      continue;
+    void *ignored;
+    if (fd == STDIN_FILENO) {
+      if (read(fd, ignored, 0) == 0)
+        continue;
+    } else {
+      if (write(fd, ignored, 0) == 0)
+        continue;
+    }
     // Anything but EBADF means something is seriously wrong.  We don't
     // have to special-case EINTR, fstat() is not interruptible.
     if (errno != EBADF)
