@@ -4102,22 +4102,11 @@ inline void PlatformInit() {
   const int err = pthread_sigmask(SIG_SETMASK, &sigmask, nullptr);
 
   // Make sure file descriptors 0-2 are valid before we start logging anything.
-  for (int fd = STDIN_FILENO; fd <= STDERR_FILENO; fd += 1) {
-    void *ignored;
-    if (fd == STDIN_FILENO) {
-      if (read(fd, ignored, 0) == 0)
-        continue;
-    } else {
-      if (write(fd, ignored, 0) == 0)
-        continue;
-    }
-    // Anything but EBADF means something is seriously wrong.  We don't
-    // have to special-case EINTR, fstat() is not interruptible.
-    if (errno != EBADF)
-      ABORT();
-    if (fd != open("/dev/null", O_RDWR))
-      ABORT();
+  int fd = -1;
+  while (fd <= STDERR_FILENO) {
+    fd = open("/dev/null", O_RDWR);
   }
+  close(fd);
 
   CHECK_EQ(err, 0);
 
