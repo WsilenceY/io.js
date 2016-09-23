@@ -201,18 +201,18 @@ CI_JS_SUITES := doctool inspector known_issues message parallel pseudo-tty seque
 # Build and test addons without building anything else
 test-ci-native: | test/addons/.buildstamp
 	$(PYTHON) tools/test.py $(PARALLEL_ARGS) -p tap --logfile test.tap \
-		--mode=release --flaky-tests=$(FLAKY_TESTS) \
+		--timeout=600 --mode=release --flaky-tests=$(FLAKY_TESTS) \
 		$(TEST_CI_ARGS) $(CI_NATIVE_SUITES)
 
 # This target should not use a native compiler at all
 test-ci-js:
 	$(PYTHON) tools/test.py $(PARALLEL_ARGS) -p tap --logfile test.tap \
-		--mode=release --flaky-tests=$(FLAKY_TESTS) \
+		--timeout=600 --mode=release --flaky-tests=$(FLAKY_TESTS) \
 		$(TEST_CI_ARGS) $(CI_JS_SUITES)
 
 test-ci: | build-addons
 	$(PYTHON) tools/test.py $(PARALLEL_ARGS) -p tap --logfile test.tap \
-		--mode=release --flaky-tests=$(FLAKY_TESTS) \
+		--timeout=600 --mode=release --flaky-tests=$(FLAKY_TESTS) \
 		$(TEST_CI_ARGS) $(CI_NATIVE_SUITES) $(CI_JS_SUITES)
 
 test-release: test-build
