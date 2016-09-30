@@ -2,7 +2,7 @@
 const common = require('../common');
 const assert = require('assert');
 
-let immediateB;
+let immediateB; // eslint-disable-line prefer-const
 let immediateC;
 let immediateD;
 
