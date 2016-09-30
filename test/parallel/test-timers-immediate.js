@@ -3,8 +3,8 @@ const common = require('../common');
 const assert = require('assert');
 
 let immediateB;
-let immediateC = [];
-let immediateD = [];
+let immediateC;
+let immediateD;
 
 let mainFinished = false;
 
