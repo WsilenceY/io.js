@@ -28,6 +28,8 @@ function runTest(test) {
   }, RETRY_TIMEOUT);
 }
 
+var retries = 0;
+
 function match(pattern, parent, ticks) {
   // Store current ticks log
   fs.writeFileSync(LOG_FILE, ticks());
@@ -47,8 +49,12 @@ function match(pattern, parent, ticks) {
       fs.unlinkSync(LOG_FILE);
 
       // Retry after timeout
-      if (!pattern.test(out))
+      if (!pattern.test(out)) {
+        console.log('retries', retries, '\nNOT FOUND START\n', out, '\nNOT FOUND END\n');
+        if (retries++ > 4)
+          return common.fail('pattern not found');
         return setTimeout(() => match(pattern, parent, ticks), RETRY_TIMEOUT);
+      }
 
       parent.stdout.removeAllListeners();
       parent.kill();
