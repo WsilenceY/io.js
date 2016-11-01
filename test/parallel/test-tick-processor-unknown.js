@@ -7,7 +7,7 @@ const common = require('../common');
 // addresses correctly and runs out of memory
 // Disabling until we get a fix upstreamed into V8
 if (common.isAix) {
-  common.skip('Aix address range too big for scripts.');
+  common.skip('AIX address range too big for scripts.');
   return;
 }
 

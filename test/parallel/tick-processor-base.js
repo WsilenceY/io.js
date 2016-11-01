@@ -51,7 +51,7 @@ function match(pattern, parent, ticks) {
       // Retry after timeout
       if (!pattern.test(out)) {
         console.log('retries', retries, '\nNOT FOUND START\n', out, '\nNOT FOUND END\n');
-        if (retries++ > 4)
+        if (retries++ > 2)
           return common.fail('pattern not found');
         return setTimeout(() => match(pattern, parent, ticks), RETRY_TIMEOUT);
       }
