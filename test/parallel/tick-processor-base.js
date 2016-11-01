@@ -43,6 +43,8 @@ function match(pattern, parent, ticks) {
   let out = '';
   proc.stdout.on('data', (chunk) => out += chunk);
   proc.stdout.once('end', () => {
+    console.log(out);
+    return common.fail('making it fail on purpose');
     proc.once('exit', () => {
       fs.unlinkSync(LOG_FILE);
 
