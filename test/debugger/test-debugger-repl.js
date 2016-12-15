@@ -73,9 +73,9 @@ addTest('repl', [
 addTest('for (var i in process.env) delete process.env[i]', []);
 
 addTest('process.env', [
-  /\{\}/
+  /{}/
 ]);
 
 addTest('arr = [{foo: "bar"}]', [
-  /\[ \{ foo: 'bar' \} \]/
+  /\[ { foo: 'bar' } ]/
 ]);
