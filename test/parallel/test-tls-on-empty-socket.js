@@ -34,7 +34,9 @@ const server = tls.createServer({
     });
   });
 
-  socket.connect(this.address().port);
+  socket.on('error', () => {console.log('err');});
+  console.log('SOCKET', Object.keys(socket._events));
+  socket.connect(1025);
 });
 
 process.on('exit', function() {

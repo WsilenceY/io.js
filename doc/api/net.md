@@ -501,7 +501,7 @@ socket. Use this only if you are implementing a custom Socket.
 
 This function is asynchronous. When the [`'connect'`][] event is emitted the
 socket is established. If there is a problem connecting, the `'connect'` event
-will not be emitted, the [`'error'`][] event will be emitted with the exception.
+will not be emitted. The [`'error'`][] event will be emitted with the exception.
 
 The `connectListener` parameter will be added as a listener for the
 [`'connect'`][] event.
