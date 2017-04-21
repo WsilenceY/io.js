@@ -102,7 +102,7 @@ rules:
                   CallExpression: {arguments: first},
                   FunctionDeclaration: {parameters: first},
                   FunctionExpression: {parameters: first},
-                  MemberExpression: 1,
+                  MemberExpression: off,
                   ObjectExpression: first,
                   SwitchCase: 1}]
   key-spacing: [2, {mode: minimum}]
