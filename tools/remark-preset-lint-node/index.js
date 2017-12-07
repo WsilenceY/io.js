@@ -45,7 +45,9 @@ module.exports.plugins = [
       { no: 'Github', yes: 'GitHub' },
       { no: 'Javascript', yes: 'JavaScript' },
       { no: 'Node.JS', yes: 'Node.js' },
-      { no: 'v8', yes: 'V8' }
+      { no: 'v8', yes: 'V8' },
+      { no: ', \\w+ and ', yes: 'add a serial comma' },
+      { no: ', \\w+ or ', yes: 'add a serial comma' }
     ]
   ],
   [require('remark-lint-strong-marker'), '*'],
