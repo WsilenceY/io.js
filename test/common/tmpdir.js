@@ -2,7 +2,7 @@
 // 'use strict';
 
 // const fs = require('fs');
-const path = require('path');
+// const path = require('path');
 
 // function rimrafSync(p) {
 //   let st;
@@ -52,7 +52,8 @@ const path = require('path');
 
 // const testRoot = process.env.NODE_TEST_DIR ?
 //   fs.realpathSync(process.env.NODE_TEST_DIR) : path.resolve(__dirname, '..');
-const testRoot = path.resolve(__dirname, '..');
+// const testRoot = path.resolve(__dirname, '..');
+const testRoot = __dirname + '/..';
 
 // Using a `.` prefixed name, which is the convention for "hidden" on POSIX,
 // gets tools to ignore it by default or by simple rules, especially eslint.
@@ -60,7 +61,8 @@ let tmpdirName = '.tmp';
 // if (process.env.TEST_THREAD_ID) {
 //   tmpdirName += `.${process.env.TEST_THREAD_ID}`;
 // }
-exports.path = path.join(testRoot, tmpdirName);
+// exports.path = path.join(testRoot, tmpdirName);
+exports.path = testRoot + '/' + tmpdirName;
 
 // exports.refresh = () => {
 //   rimrafSync(exports.path);
