@@ -62,7 +62,7 @@ let tmpdirName = '.tmp';
 //   tmpdirName += `.${process.env.TEST_THREAD_ID}`;
 // }
 // exports.path = path.join(testRoot, tmpdirName);
-exports.path = __dirname + '/../.tmp';
+exports.path = './../.tmp';
 
 // exports.refresh = () => {
 //   rimrafSync(exports.path);
