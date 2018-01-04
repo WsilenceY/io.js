@@ -62,3 +62,7 @@ exports.path = path.resolve(__dirname, '..', 'tmp');
 // if (process.env.TEST_THREAD_ID) {
 //   tmpdirName += `.${process.env.TEST_THREAD_ID}`;
 // }
+
+// exports.refresh = () => {
+//   rimrafSync(exports.path);
+
