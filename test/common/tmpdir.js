@@ -64,4 +64,4 @@ exports.path = path.resolve(__dirname, '..', 'tmp');
 // }
 
 // exports.refresh = () => {
-//   rimrafSync(exports.path);
+//   rimrafSync
