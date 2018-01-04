@@ -61,8 +61,7 @@ let tmpdirName = '.tmp';
 // if (process.env.TEST_THREAD_ID) {
 //   tmpdirName += `.${process.env.TEST_THREAD_ID}`;
 // }
-// exports.path = path.join(testRoot, tmpdirName);
-exports.path = __dirname + '/../.tmp';
+exports.path = path.join(testRoot, tmpdirName);
 
 // exports.refresh = () => {
 //   rimrafSync(exports.path);
