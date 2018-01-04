@@ -2,7 +2,7 @@
 // 'use strict';
 
 // const fs = require('fs');
-// const path = require('path');
+const path = require('path');
 
 // function rimrafSync(p) {
 //   let st;
