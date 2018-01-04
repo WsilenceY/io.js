@@ -3,6 +3,7 @@
 
 // const fs = require('fs');
 const path = require('path');
+exports.path = path.resolve(__dirname, '..', 'tmp');
 
 // function rimrafSync(p) {
 //   let st;
@@ -61,7 +62,6 @@ const path = require('path');
 // if (process.env.TEST_THREAD_ID) {
 //   tmpdirName += `.${process.env.TEST_THREAD_ID}`;
 // }
-exports.path = path.resolve(__dirname, '..', 'tmp');
 
 // exports.refresh = () => {
 //   rimrafSync(exports.path);
