@@ -57,12 +57,12 @@ const testRoot = __dirname + '/..';
 
 // Using a `.` prefixed name, which is the convention for "hidden" on POSIX,
 // gets tools to ignore it by default or by simple rules, especially eslint.
-let tmpdirName = '.tmp';
+// let tmpdirName = '.tmp';
 // if (process.env.TEST_THREAD_ID) {
 //   tmpdirName += `.${process.env.TEST_THREAD_ID}`;
 // }
 // exports.path = path.join(testRoot, tmpdirName);
-exports.path = './../.tmp';
+exports.path = __dirname + '/../.tmp';
 
 // exports.refresh = () => {
 //   rimrafSync(exports.path);
