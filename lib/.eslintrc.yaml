@@ -2,6 +2,7 @@ rules:
   dot-notation: error
 
   # Custom rules in tools/eslint-rules
+  capitalized-comments: [error, always, {ignoreConsecutiveComments: true, ignorePattern: \w+\.\w}]
   require-buffer: error
   buffer-constructor: error
   no-let-in-for-declaration: error
