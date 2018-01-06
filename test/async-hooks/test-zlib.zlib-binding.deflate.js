@@ -30,7 +30,7 @@ handle.init(
   function processCallback() { this.cb(); },
   Buffer.from('')
 );
-// checkInvocations(hdl, { init: 1 }, 'when initialized handle');
+checkInvocations(hdl, { init: 1 }, 'when initialized handle');
 
 const inBuf = Buffer.from('x');
 const outBuf = Buffer.allocUnsafe(1);
