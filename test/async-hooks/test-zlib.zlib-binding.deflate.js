@@ -19,7 +19,7 @@ const hdl = as[0];
 assert.strictEqual(hdl.type, 'ZLIB');
 assert.strictEqual(typeof hdl.uid, 'number');
 assert.strictEqual(typeof hdl.triggerAsyncId, 'number');
-// checkInvocations(hdl, { init: 1 }, 'when created handle');
+checkInvocations(hdl, { init: 1 }, 'when created handle');
 
 handle.init(
   constants.Z_DEFAULT_WINDOWBITS,
