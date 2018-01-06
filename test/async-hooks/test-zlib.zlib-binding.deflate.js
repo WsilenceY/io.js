@@ -38,7 +38,7 @@ const outBuf = Buffer.allocUnsafe(1);
 let count = 2;
 handle.cb = common.mustCall(onwritten, 2);
 handle.write(true, inBuf, 0, 1, outBuf, 0, 1);
-// checkInvocations(hdl, { init: 1 }, 'when invoked write() on handle');
+checkInvocations(hdl, { init: 1 }, 'when invoked write() on handle');
 
 function onwritten() {
   if (--count) {
