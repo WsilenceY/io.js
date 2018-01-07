@@ -28,22 +28,18 @@ exports.checkInvocations = function checkInvocations(activity, hooks, stage) {
   [ 'init', 'before', 'after', 'destroy' ].forEach(checkHook);
 
   function checkHook(k) {
-    console.log('checkhook')
     const val = hooks[k];
+
     // Not expected ... all good
-    if (val == null) {
-      console.log('val is null');
-      return;
-    }
+    if (val == null) return;
+
     if (val === 0) {
-      console.log('val is 0');
       // Didn't expect any invocations, but it was actually invoked
       const invocations = activity[k].length;
       const msg = `${stageInfo} Called "${k}" ${invocations} time(s), ` +
                   'but expected no invocations.';
       assert(activity[k] === null && activity[k] === undefined, msg);
     } else {
-      console.log('val is not 0');
       // Expected some invocations, make sure that it was invoked at all
       const msg1 = `${stageInfo} Never called "${k}", ` +
                    `but expected ${val} invocation(s).`;
@@ -55,6 +51,5 @@ exports.checkInvocations = function checkInvocations(activity, hooks, stage) {
                    `time(s), but expected ${val} invocation(s).`;
       assert.strictEqual(activity[k].length, val, msg2);
     }
-    console.log('returning');
   }
 };
