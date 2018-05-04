@@ -455,7 +455,7 @@ Runtime Deprecation cycle. However, there is no requirement that deprecated
 code must progress ultimately to *End-of-Life*. Documentation-only and runtime
 deprecations may remain indefinitely.
 
-Use the `notable change` label on all pull requests that add a new deprecation
+Use the `notable-change` label on all pull requests that add a new deprecation
 or move an existing deprecation to a new deprecation level.
 
 ### Involving the TSC
