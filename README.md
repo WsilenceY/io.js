@@ -537,6 +537,8 @@ For more information about the governance of the Node.js project, see
 
 ### Collaborator Emeriti
 
+* [domenic](https://github.com/domenic) -
+**Domenic Denicola** &lt;d@domenic.me&gt;
 * [isaacs](https://github.com/isaacs) -
 **Isaac Z. Schlueter** &lt;i@izs.me&gt;
 * [lxe](https://github.com/lxe) -
@@ -549,6 +551,8 @@ For more information about the governance of the Node.js project, see
 **Christopher Monsanto** &lt;chris@monsan.to&gt;
 * [Olegas](https://github.com/Olegas) -
 **Oleg Elifantiev** &lt;oleg@elifantiev.ru&gt;
+* [othiym23](https://github.com/othiym23) -
+**Forrest L Norvell &lt;ogd@aoaioxxysz.net&gt;
 * [petkaantonov](https://github.com/petkaantonov) -
 **Petka Antonov** &lt;petka_antonov@hotmail.com&gt;
 * [piscisaureus](https://github.com/piscisaureus) -
@@ -557,6 +561,8 @@ For more information about the governance of the Node.js project, see
 **Alex Kocharin** &lt;alex@kocharin.ru&gt;
 * [tellnes](https://github.com/tellnes) -
 **Christian Tellnes** &lt;christian@tellnes.no&gt;
+* [TooTallNate](https://github.com/TooTallNate) -
+**Nathan Rajlich** &lt;n@n8.io&gt;
 * [tunniclm](https://github.com/tunniclm) -
 **Mike Tunnicliffe** &lt;m.j.tunnicliffe@gmail.com&gt;
 
