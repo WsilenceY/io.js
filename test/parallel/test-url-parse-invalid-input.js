@@ -27,3 +27,6 @@ const url = require('url');
 
 assert.throws(() => { url.parse('http://%E0%A4%A@fail'); },
               /^URIError: URI malformed$/);
+
+common.expectsError(() => { url.parse('http://example.com:123abc/foo'); },
+                    { code: 'ERR_INVALID_URL', type: TypeError });
