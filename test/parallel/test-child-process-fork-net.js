@@ -81,6 +81,8 @@ if (process.argv[2] === 'child') {
 
   const child = fork(process.argv[1], ['child']);
 
+  child.on('disconnect', () => { console.log('CHILD: disconnect'); });
+
   child.on('exit', common.mustCall(function(code, signal) {
     const message = `CHILD: died with ${code}, ${signal}`;
     assert.strictEqual(code, 0, message);
