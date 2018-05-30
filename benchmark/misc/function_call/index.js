@@ -1,4 +1,4 @@
-// show the difference between calling a short js function
+// Show the difference between calling a short js function
 // relative to a comparable C++ function.
 // Reports n of calls per second.
 // Note that JS speed goes up, while cxx speed stays about the same.
@@ -7,8 +7,8 @@
 const assert = require('assert');
 const common = require('../../common.js');
 
-// this fails when we try to open with a different version of node,
-// which is quite common for benchmarks.  so in that case, just
+// This fails when we try to open with a different version of node,
+// which is quite common for benchmarks.  So in that case, just
 // abort quietly.
 
 try {
@@ -32,6 +32,9 @@ const bench = common.createBenchmark(main, {
 });
 
 function main({ n, type }) {
+  // Default type for tests.
+  if (type === '')
+    type = 'js';
   const fn = type === 'cxx' ? cxx : js;
   bench.start();
   for (var i = 0; i < n; i++) {
