@@ -411,7 +411,6 @@ recommended but not required.
 
 ### Deprecations
 
-<<<<<<< HEAD
 [_Deprecation_][] is "the discouragement of use of some … feature … or practice,
 typically because it has been superseded or is no longer considered efficient or
 safe, without completely removing it or prohibiting its use. It can also imply
